@@ -2,18 +2,6 @@ name: Homework Grade
 
 on:
   workflow_call:
-    inputs:
-      extension_hours:
-        description: Amount of extension granted (in hours)
-        type: number
-        default: 0
-        required: false
-
-      min_commits:
-        description: Minimum number of commits required to earn credit
-        type: number
-        default: 1
-        required: false
 
 permissions:
   checks: write
@@ -26,13 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    permissions:
+      checks: read
+      actions: read
+      contents: read
+
     outputs:
       homework_name: ${{ steps.homework_setup.outputs.homework_name }}
       java_path: ${{ steps.homework_setup.outputs.java_path }}
+
       points: ${{ steps.autograder.outputs.points }}
       autograder: ${{ steps.autograder.outcome }}
-      has_warnings: ${{ steps.check_warnings.outcome }}
-      num_commits: ${{ steps.check_commits.outputs.num_commits }}
+
+      compile_warnings: ${{ steps.check_compile.outcome }}
+      javadoc_warnings: ${{ steps.check_javadoc.outcome }}
+      commits_warnings: ${{ steps.check_commits.outcome }}
 
     steps:
       - name: Setup homework environment
@@ -46,28 +42,45 @@ jobs:
       # must be after autograder to avoid compile issues
       # run this step even if the autograder failed (but not if it was skipped or cancelled)
       - name: Check for compile warnings
-        id: check_warnings
+        id: check_compile
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
-          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+
+      # must be after autograder to avoid compile issues
+      # run this step even if the autograder failed (but not if it was skipped or cancelled)
+      - name: Check for Javadoc warnings
+        id: check_javadoc
+        if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
+        shell: bash
+        run: |
+          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
       # check while we still have the repository checked out
       # run this step even if the autograder failed (but not if it was skipped or cancelled)
-      - name: Check number of commits
+      - name: Check for minimum number of commits
         id: check_commits
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
+        env:
+          MIN_COMMITS: 3
         run: |
           echo "Listing commits..."
           git fetch --unshallow
           git log --oneline refs/remotes/origin/main
           
-          echo ""
           NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
           echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
           echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
-          echo "Found ${NUM_COMMITS} commits."
+
+          echo ""
+          echo "Minimum Commits: ${MIN_COMMITS}"
+          echo "Found Commits: ${NUM_COMMITS} (at least)"
+
+          if [[ ${NUM_COMMITS} -ge ${MIN_COMMITS} ]]; then
+            exit 0
+          fi
 
   grade:
     name: Autograding # need a check named "Autograding"
@@ -88,26 +101,42 @@ jobs:
               core.setOutput(property, outputs[property]);
             }
         
-      - name: Calculate penalties and final grade
+      - name: Calculate non-late deductions
         uses: actions/github-script@v6
         env:
-          POINTS: ${{ needs.test.outputs.points }}
+          HAS_WARNINGS: ${{ needs.test.outputs.has_warnings }}
+          NUM_COMMITS: ${{ needs.test.outputs.num_commits }}
         with:
           script: |
-            try {
-              const points = process.env.POINTS;
-              const matches = Array.from(points.matchAll(/\d+/g));
-              console.log(matches);
+            let deductions = 0;
+            let message = '';
 
-              const earned = parseInt(matches[0][0]);
-              const possible = parseInt(matches[1][0]);
+            switch (process.env.HAS_WARNINGS) {
+              case 'failure':
+                deductions += 5;
+                message += 'The Java code or Javadoc comments have '
 
-              core.info(earned);
-              core.info(possible);
+                break;
+              case 'success':
+                break;
+              deafult:
+                core.setFailed('Unable to calculate non-late deductions.');
             }
-            catch (error) {
-              core.setFailed(`Unable to parse earned and possible points.`);
-            }
+
+            # try {
+            #   const points = process.env.POINTS;
+            #   const matches = Array.from(points.matchAll(/\d+/g));
+            #   console.log(matches);
+
+            #   const earned = parseInt(matches[0][0]);
+            #   const possible = parseInt(matches[1][0]);
+
+            #   core.info(earned);
+            #   core.info(possible);
+            # }
+            # catch (error) {
+            #   core.setFailed(`Unable to calculate non-late deductions.`);
+            # }
 
 
     # TODO: Add checking commits, warnings, deadline to grade job, add badge
