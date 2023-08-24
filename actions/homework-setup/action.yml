@@ -122,5 +122,7 @@ runs:
 
     - shell: bash
       run: |
+        cd $(command -v mvn)
+        ls -la
         mkdir -p ~/.m2/conf/logging/
         cp ${{ github.action_path }}/simplelogger.properties ~/.m2/conf/logging/simplelogger.properties
