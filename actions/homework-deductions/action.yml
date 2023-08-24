@@ -1,0 +1,34 @@
+name: 'Calculate homework deductions'
+description: 'Calculate non-late homework deductions'
+
+inputs:
+  compile_status:
+    description: 'Status for checking for compile warnings'
+    required: true
+
+  javadoc_status:
+    description: 'Status for checking for Javadoc warnings'
+    required: true
+
+  commits_status:
+    description: 'Status for checking minimum number of commits'
+    required: false
+
+outputs:
+  other_deductions:
+    description: 'Amount of other deductions to subtract from grade'
+    value: '${{ steps.calculate_deductions.outputs.other_deductions }}'
+
+runs:
+  using: 'composite'
+  steps:
+    - id: calculate_deductions
+      uses: actions/github-script@v6
+      env:
+        COMPILE_STATUS: ${{ inputs.compile_status }}
+        JAVADOC_STATUS: ${{ inputs.javadoc_status }}
+        COMMITS_STATUS: ${{ inputs.commits_status }}
+      with:
+        script: |
+          const script = require(`${github.action_path}/index.js`);
+          return await script({github, context, core});

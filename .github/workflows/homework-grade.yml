@@ -21,7 +21,6 @@ jobs:
 
     outputs:
       homework_name: ${{ steps.homework_setup.outputs.homework_name }}
-      java_path: ${{ steps.homework_setup.outputs.java_path }}
 
       points: ${{ steps.autograder.outputs.points }}
       autograder: ${{ steps.autograder.outcome }}
@@ -101,43 +100,27 @@ jobs:
               core.setOutput(property, outputs[property]);
             }
         
-      # - name: Calculate non-late deductions
-      #   uses: actions/github-script@v6
-      #   env:
-      #     COMPILE_STATUS: ${{ needs.test.outputs.compile_status }}
-      #     JAVADOC_STATUS: ${{ needs.test.outputs.javadoc_status }}
-      #     COMMITS_STATUS: ${{ needs.test.outputs.commits_status }}
-      #   with:
-      #     script: |
-      #       let deductions = 0;
-      #       let message = '';
+      - name: Calculate non-late deductions
+        uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
+        with:
+          compile_status: ${{ needs.test.outputs.compile_status }}
+          javadoc_status: ${{ needs.test.outputs.javadoc_status }}
+          commits_status: ${{ needs.test.outputs.commits_status }}
 
-      #       switch (process.env.HAS_WARNINGS) {
-      #         case 'failure':
-      #           deductions += 5;
-      #           message += 'The Java code or Javadoc comments have '
+    # try {
+    #   const points = process.env.POINTS;
+    #   const matches = Array.from(points.matchAll(/\d+/g));
+    #   console.log(matches);
 
-      #           break;
-      #         case 'success':
-      #           break;
-      #         deafult:
-      #           core.setFailed('Unable to calculate non-late deductions.');
-      #       }
+    #   const earned = parseInt(matches[0][0]);
+    #   const possible = parseInt(matches[1][0]);
 
-            # try {
-            #   const points = process.env.POINTS;
-            #   const matches = Array.from(points.matchAll(/\d+/g));
-            #   console.log(matches);
-
-            #   const earned = parseInt(matches[0][0]);
-            #   const possible = parseInt(matches[1][0]);
-
-            #   core.info(earned);
-            #   core.info(possible);
-            # }
-            # catch (error) {
-            #   core.setFailed(`Unable to calculate non-late deductions.`);
-            # }
+    #   core.info(earned);
+    #   core.info(possible);
+    # }
+    # catch (error) {
+    #   core.setFailed(`Unable to calculate non-late deductions.`);
+    # }
 
 
     # TODO: Add checking commits, warnings, deadline to grade job, add badge
