@@ -41,10 +41,12 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const outputs = toJSON(${{ needs.test.outputs }});
+            const outputs = ${{ toJSON(needs.test.outputs) }};
             for (const property in outputs) {
               core.info(`${propery}: ${outputs[property]}`);
             }
+
+      - name: Parse grade
 
         #   env:
         #   HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
