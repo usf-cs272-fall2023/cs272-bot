@@ -57,6 +57,8 @@ jobs:
             const matches = Array.from(points.matchAll(/\d+/g));
             console.log(matches);
 
+            assert(matches.length != 2, `Unable to parse: ${points}`);
+
         #   env:
         #   HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
         #   JAVA_PATH: ${{ needs.test.outputs.java_path }}
