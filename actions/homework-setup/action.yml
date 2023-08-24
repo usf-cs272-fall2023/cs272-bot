@@ -41,7 +41,9 @@ runs:
     # must be in working directory for autograder
 
     - uses: actions/checkout@v3
-    - run: echo ""
+
+    - shell: bash
+      run: echo ""
 
     - shell: bash
       run: |
@@ -110,7 +112,8 @@ runs:
         java-version: '17'
         cache: 'maven'
 
-    - run: echo ""
+    - shell: bash
+      run: echo ""
 
     # compile code (ignoring any warnings)
 
