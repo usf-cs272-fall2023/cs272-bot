@@ -16,18 +16,43 @@ jobs:
 
     outputs:
       homework_name: ${{ steps.homework_setup.outputs.homework_name }}
-      java_path: ${{ steps.homework_setup.outputs.homework_name }}
+      java_path: ${{ steps.homework_setup.outputs.java_path }}
       points: ${{ steps.autograder.outputs.points }}
       autograder: ${{ steps.autograder.outcome }}
+      has_warnings: ${{ steps.check_warnings.outcome }}
+      num_commits: ${{ steps.check_commits.outputs.num_commits }}
 
     steps:
       - name: Setup homework environment
         id: homework_setup
         uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
 
-      - name: Run GitHub autograder
+      - name: Run tests and autograder
         id: autograder
         uses: education/autograding@v1
+
+      # must be after autograder to avoid compile issues
+      - name: Check for compile warnings
+        id: check_warnings
+        if: ${{ steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure' }}
+        shell: bash
+        run: |
+          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-processing" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+
+      # check while we still have the repository checked out
+      - name: Check number of commits
+        id: check_commits
+        if: ${{ steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure' }}
+        shell: bash
+        run: |
+          echo "Listing commits..."
+          git fetch --unshallow
+          NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
+
+          echo ""
+          echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
+          echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
+          echo "Found ${NUM_COMMITS} commits."
 
   grade:
     name: Autograding # need a check named "Autograding"
@@ -42,34 +67,32 @@ jobs:
         with:
           script: |
             const outputs = ${{ toJSON(needs.test.outputs) }};
+
             for (const property in outputs) {
               core.info(`${property}: ${outputs[property]}`);
               core.setOutput(property, outputs[property]);
             }
-
+        
       - name: Parse grade output
         uses: actions/github-script@v6
         env:
           POINTS: ${{ needs.test.outputs.points }}
         with:
           script: |
-            const points = process.env.POINTS;
-            const matches = Array.from(points.matchAll(/\d+/g));
-            console.log(matches);
+            try {
+              const points = process.env.POINTS;
+              const matches = Array.from(points.matchAll(/\d+/g));
+              console.log(matches);
 
-            assert(matches.length != 2, `Unable to parse: ${points}`);
+              const earned = parseInt(matches[0][0]);
+              const possible = parseInt(matches[1][0]);
 
-        #   env:
-        #   HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
-        #   JAVA_PATH: ${{ needs.test.outputs.java_path }}
-        #   POINTS: ${{ needs.test.outputs.points }}
-        #   AUTOGRADER: ${{ needs.test.outputs.autograder }}
-        # shell: bash
-        # run: |
-        #   echo "  Homework: ${HOMEWORK_NAME}"
-        #   echo " Java Path: ${JAVA_PATH}"
-        #   echo "    Points: ${POINTS}"
-        #   echo "Autograder: ${AUTOGRADER}"
+              core.info(earned);
+              core.info(possible);
+            }
+            catch (error) {
+              core.setFailed(`Unable to parse earned and possible points.`);
+            }
 
 
     # TODO: Add checking commits, warnings, deadline to grade job, add badge
