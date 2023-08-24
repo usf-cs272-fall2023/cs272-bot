@@ -2,6 +2,18 @@ name: Homework Grade
 
 on:
   workflow_call:
+    inputs:
+      extension_hours:
+        description: Amount of extension granted (in hours)
+        type: number
+        default: 0
+        required: false
+
+      min_commits:
+        description: Minimum number of commits required to earn credit
+        type: number
+        default: 1
+        required: false
 
 permissions:
   checks: write
@@ -38,7 +50,7 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
-          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-processing" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
       # check while we still have the repository checked out
       # run this step even if the autograder failed (but not if it was skipped or cancelled)
@@ -76,7 +88,7 @@ jobs:
               core.setOutput(property, outputs[property]);
             }
         
-      - name: Parse grade output
+      - name: Calculate penalties and final grade
         uses: actions/github-script@v6
         env:
           POINTS: ${{ needs.test.outputs.points }}
