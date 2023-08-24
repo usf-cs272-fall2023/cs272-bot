@@ -18,7 +18,7 @@ jobs:
       homework_name: ${{ steps.homework_setup.outputs.homework_name }}
       java_path: ${{ steps.homework_setup.outputs.homework_name }}
       points: ${{ steps.autograder.outputs.points }}
-      autograder_status: ${{ steps.autograder.outcome }}
+      autograder: ${{ steps.autograder.outcome }}
 
     steps:
       - name: Setup homework environment
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: test
-    if: ${{ !cancelled() && (needs.test.outputs.autograder_status == 'success' || needs.test.outputs.autograder_status == 'failure') }}
+    if: ${{ !cancelled() && (needs.test.outputs.autograder == 'success' || needs.test.outputs.autograder == 'failure') }}
 
     steps:
       - name: Verify test outcomes
@@ -42,11 +42,13 @@ jobs:
           HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
           JAVA_PATH: ${{ needs.test.outputs.java_path }}
           POINTS: ${{ needs.test.outputs.points }}
+          AUTOGRADER: ${{ needs.test.outputs.autograder }}
         shell: bash
         run: |
-          echo " Homework: ${HOMEWORK_NAME}"
-          echo "Java Path: ${JAVA_PATH}"
-          echo "   Points: ${POINTS}"
+          echo "  Homework: ${HOMEWORK_NAME}"
+          echo " Java Path: ${JAVA_PATH}"
+          echo "    Points: ${POINTS}"
+          echo "Autograder: ${AUTOGRADER}"
 
 
     # TODO: Add checking commits, warnings, deadline to grade job, add badge
