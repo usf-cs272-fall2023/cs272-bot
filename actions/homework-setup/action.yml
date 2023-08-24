@@ -120,9 +120,11 @@ runs:
           cat ${command_file}
         done
 
+    # TODO: avoid hard-coded maven path
+
     - shell: bash
       run: |
-        cd /usr/share/apache-maven-3.8.8
-        ls -la
+        cd /usr/share/apache-maven-3.8.8/conf
+        ls -laR
         mkdir -p ~/.m2/conf/logging/
-        cp ${{ github.action_path }}/simplelogger.properties ~/.m2/conf/logging/simplelogger.properties
+        cp ${{ github.action_path }}/simplelogger.properties /usr/share/apache-maven-3.8.8/conf/logging/simplelogger.properties
