@@ -54,7 +54,7 @@ jobs:
         with:
           script: |
             const points = process.env.POINTS;
-            const matches = points.matchAll(/\d+/g);
+            const matches = Array.from(points.matchAll(/\d+/g));
             console.log(matches);
 
         #   env:
