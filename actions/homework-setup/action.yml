@@ -121,5 +121,5 @@ runs:
       run: |
         echo "Compiling homework..."
         mvn -f pom.xml -ntp --quiet "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=false" "-Dmaven.compiler.showWarnings=false" clean compile test-compile
-        find src/target/ -not -path '*/.*' -type f
+        find target/ -not -path '*/.*' -type f
         echo ""
