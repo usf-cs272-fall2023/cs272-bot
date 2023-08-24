@@ -49,9 +49,10 @@ jobs:
         run: |
           echo "Listing commits..."
           git fetch --unshallow
-          NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
-
+          git log --oneline refs/remotes/origin/main
+          
           echo ""
+          NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
           echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
           echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
           echo "Found ${NUM_COMMITS} commits."
