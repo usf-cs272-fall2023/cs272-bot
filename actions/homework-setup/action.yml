@@ -6,9 +6,9 @@ outputs:
     description: 'Name of homework parsed from repository name'
     value: ${{ steps.parse_name.outputs.homework_name }}
 
-  found_commits:
-    description: 'Number of commits found'
-    value: ${{ steps.check_commits.outputs.path }}
+  # found_commits:
+  #   description: 'Number of commits found'
+  #   value: ${{ steps.check_commits.outputs.path }}
 
   java_path:
     description: 'Path of Java installation'
@@ -17,13 +17,11 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    # parse homework name from repository name
-
     - name: Parse homework name
       id: parse_name
       shell: bash
       run: |
-        echo "\nWorking: $(pwd)"
+        echo "Working: $(pwd)"
         echo "Repository: ${GITHUB_REPOSITORY}"
 
         if [[ ${GITHUB_REPOSITORY} =~ .+\/homework-([^-]+)-.+ ]]; then
@@ -46,23 +44,25 @@ runs:
     - name: List homework files and commits
       shell: bash
       run: |
-        echo "\nListing homework files..."
+        echo "Listing homework files..."
         find . -not -path '*/.*' -type f
-
-    # check number of commits in repository
-
-    - name: Check number of commits
-      id: check_commits
-      shell: bash
-      run: |
         echo ""
-        echo "Listing commits..."
-        git fetch --unshallow
-        NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
 
-        echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
-        echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
-        echo "Found ${NUM_COMMITS} commits."
+    # TODO: Move to grading step
+    # # check number of commits in repository
+
+    # - name: Check number of commits
+    #   id: check_commits
+    #   shell: bash
+    #   run: |
+    #     echo "Listing commits..."
+    #     git fetch --unshallow
+    #     NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
+
+    #     echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
+    #     echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
+    #     echo "Found ${NUM_COMMITS} commits."
+    #     echo ""
 
     # get clean test files from template repository
 
@@ -81,7 +81,6 @@ runs:
         git clone --depth 1 "${TEMPLATE_REPO}" ${TEMPLATE_DIR}/template
 
     - name: Setup clean test environment
-      id: setup-test
       shell: bash
       run: |
         echo ""
@@ -97,6 +96,7 @@ runs:
         echo ""
         echo "Listing clean test files..."
         find src/test/ -not -path '*/.*' -type f
+        echo ""
 
     # setup java
     # https://github.com/actions/setup-java
@@ -109,3 +109,11 @@ runs:
         java-version: '17'
         cache: 'maven'
 
+    # compile code (ignoring any warnings)
+    - name: Compile homework and test code
+      shell: bash
+      run: |
+        echo ""
+        echo "Compiling homework..."
+        mvn -f pom.xml -ntp --quiet "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=false" "-Dmaven.compiler.showWarnings=false" clean compile test-compile
+        echo ""
