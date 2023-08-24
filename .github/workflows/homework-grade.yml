@@ -26,9 +26,9 @@ jobs:
       points: ${{ steps.autograder.outputs.points }}
       autograder: ${{ steps.autograder.outcome }}
 
-      compile_warnings: ${{ steps.check_compile.outcome }}
-      javadoc_warnings: ${{ steps.check_javadoc.outcome }}
-      commits_warnings: ${{ steps.check_commits.outcome }}
+      compile_status: ${{ steps.check_compile.outcome }}
+      javadoc_status: ${{ steps.check_javadoc.outcome }}
+      commits_status: ${{ steps.check_commits.outcome }}
 
     steps:
       - name: Setup homework environment
@@ -101,27 +101,28 @@ jobs:
               core.setOutput(property, outputs[property]);
             }
         
-      - name: Calculate non-late deductions
-        uses: actions/github-script@v6
-        env:
-          HAS_WARNINGS: ${{ needs.test.outputs.has_warnings }}
-          NUM_COMMITS: ${{ needs.test.outputs.num_commits }}
-        with:
-          script: |
-            let deductions = 0;
-            let message = '';
+      # - name: Calculate non-late deductions
+      #   uses: actions/github-script@v6
+      #   env:
+      #     COMPILE_STATUS: ${{ needs.test.outputs.compile_status }}
+      #     JAVADOC_STATUS: ${{ needs.test.outputs.javadoc_status }}
+      #     COMMITS_STATUS: ${{ needs.test.outputs.commits_status }}
+      #   with:
+      #     script: |
+      #       let deductions = 0;
+      #       let message = '';
 
-            switch (process.env.HAS_WARNINGS) {
-              case 'failure':
-                deductions += 5;
-                message += 'The Java code or Javadoc comments have '
+      #       switch (process.env.HAS_WARNINGS) {
+      #         case 'failure':
+      #           deductions += 5;
+      #           message += 'The Java code or Javadoc comments have '
 
-                break;
-              case 'success':
-                break;
-              deafult:
-                core.setFailed('Unable to calculate non-late deductions.');
-            }
+      #           break;
+      #         case 'success':
+      #           break;
+      #         deafult:
+      #           core.setFailed('Unable to calculate non-late deductions.');
+      #       }
 
             # try {
             #   const points = process.env.POINTS;
