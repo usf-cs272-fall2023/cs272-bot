@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   test:
-    name: Test
+    name: Testing
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -30,7 +30,7 @@ jobs:
         uses: education/autograding@v1
 
   grade:
-    name: Grade
+    name: Autograding # need a check named "Autograding"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: test
