@@ -1,6 +1,13 @@
 name: 'Setup Homework'
 description: 'Setup environment for testing homework'
 
+inputs:
+  min_commits:
+    description: Minimum number of commits required to earn credit
+    type: number
+    default: 3
+    required: false
+
 outputs:
   homework_name:
     description: 'Name of homework parsed from repository name'
@@ -44,3 +51,25 @@ runs:
         echo "Listing homework files..."
         find . -not -path '*/.*' -type f
 
+    ## check if repository has minimum number of commits
+    ## uses 1 as default if missing
+
+    - name: Check minimum number of commits
+      shell: bash
+      run: |
+        MIN_COMMITS=$((${{ inputs.min_commits }}))
+        if [[ ${MIN_COMMITS} -le 0 ]]; then
+          MIN_COMMITS=$((1))
+        fi
+
+        echo "Min Commits: ${MIN_COMMITS}"
+        echo "MIN_COMMITS=${MIN_COMMITS}" >> $GITHUB_ENV
+
+        echo ""
+        echo "Listing commits..."
+        git fetch --unshallow
+        NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
+
+        echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
+        echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
+        echo "Found ${NUM_COMMITS} commits; at least ${MIN_COMMITS} commits required."
