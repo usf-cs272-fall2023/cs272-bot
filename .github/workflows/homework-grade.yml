@@ -46,7 +46,11 @@ jobs:
               core.info(`${propery}: ${outputs[property]}`);
             }
 
-      - name: Parse grade
+      - name: Parse grade output
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.info('hello');
 
         #   env:
         #   HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
