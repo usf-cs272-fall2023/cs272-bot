@@ -17,10 +17,12 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Parse homework name
-      id: parse_name
+    # step names in composite actions are not output
+
+    - id: parse_name
       shell: bash
       run: |
+        echo ""
         echo "Working: $(pwd)"
         echo "Repository: ${GITHUB_REPOSITORY}"
 
@@ -35,14 +37,13 @@ runs:
 
         echo "::error ::Repository ${GITHUB_REPOSITORY} in an unexpected format; cannot parse."
 
-    # homework must be cloned into working directory
-    # otherwise will break github classroom autograder
+    # clone homework repository
+    # must be in working directory for autograder
 
-    - name: Clone homework repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
+    - run: echo ""
 
-    - name: List homework files and commits
-      shell: bash
+    - shell: bash
       run: |
         echo "Listing homework files..."
         find . -not -path '*/.*' -type f
@@ -66,34 +67,35 @@ runs:
 
     # get clean test files from template repository
 
-    - name: Make temporary directory
-      shell: bash
+    - shell: bash
       run: |
-        echo ""
         TEMPLATE_DIR=$(mktemp -d ~/template-XXXX)
         echo "Temporary Directory: ${TEMPLATE_DIR}"
         echo "TEMPLATE_DIR=${TEMPLATE_DIR}" >> $GITHUB_ENV
+        echo ""
 
-    - name: Checkout template repository
-      shell: bash
+    - shell: bash
       run: |
         TEMPLATE_REPO="https://github-actions:${{ github.token }}@github.com/${{ github.repository_owner }}/homework-${HOMEWORK_NAME}-template.git"
         git clone --depth 1 "${TEMPLATE_REPO}" ${TEMPLATE_DIR}/template
-
-    - name: Setup clean test environment
-      shell: bash
-      run: |
         echo ""
+
+    - shell: bash
+      run: |
         echo "Listing template files..."
         find ${TEMPLATE_DIR}/template -not -path '*/.*' -type f
-
         echo ""
+
+    - shell: bash
+      run: |
         echo "Moving clean test files..."
         rm -rf src/test
         mv -fv ${TEMPLATE_DIR}/template/src/test src/
         mv -fv ${TEMPLATE_DIR}/template/pom.xml .
-        
         echo ""
+        
+    - shell: bash
+      run: |
         echo "Listing clean test files..."
         find src/test/ -not -path '*/.*' -type f
         echo ""
@@ -101,19 +103,19 @@ runs:
     # setup java
     # https://github.com/actions/setup-java
 
-    - name: Setup Java JDK 17
-      id: setup_java
+    - id: setup_java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
         cache: 'maven'
 
+    - run: echo ""
+
     # compile code (ignoring any warnings)
-    - name: Compile homework and test code
-      shell: bash
+
+    - shell: bash
       run: |
-        echo ""
         echo "Compiling homework..."
         mvn -f pom.xml -ntp --quiet "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=false" "-Dmaven.compiler.showWarnings=false" clean compile test-compile
         echo ""
