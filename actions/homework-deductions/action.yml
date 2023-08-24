@@ -25,10 +25,11 @@ runs:
     - id: calculate_deductions
       uses: actions/github-script@v6
       env:
+        ACTION_PATH: ${{ github.action_path }}
         COMPILE_STATUS: ${{ inputs.compile_status }}
         JAVADOC_STATUS: ${{ inputs.javadoc_status }}
         COMMITS_STATUS: ${{ inputs.commits_status }}
       with:
         script: |
-          const script = require(`${github.action_path}/index.js`);
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
           return await script({github, context, core});
