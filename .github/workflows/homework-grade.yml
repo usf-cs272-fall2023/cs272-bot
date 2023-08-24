@@ -43,7 +43,7 @@ jobs:
           script: |
             const outputs = ${{ toJSON(needs.test.outputs) }};
             for (const property in outputs) {
-              core.info(`${propery}: ${outputs[property]}`);
+              core.info(`${property}: ${outputs[property]}`);
             }
 
       - name: Parse grade output
