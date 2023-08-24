@@ -45,7 +45,9 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
-          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+
+      # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
       # must be after autograder to avoid compile issues
       # run this step even if the autograder failed (but not if it was skipped or cancelled)
@@ -101,7 +103,7 @@ jobs:
             }
         
       - name: Calculate non-late deductions
-        uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
+        uses: usf-cs272-fall2023/cs272-bot/actions/homework-deductions@main
         with:
           compile_status: ${{ needs.test.outputs.compile_status }}
           javadoc_status: ${{ needs.test.outputs.javadoc_status }}
