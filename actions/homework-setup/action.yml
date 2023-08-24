@@ -1,6 +1,15 @@
 name: 'Setup Homework'
 description: 'Setup environment for testing homework'
 
+outputs:
+  homework_name:
+    description: 'Name of homework parsed from repository name'
+    value: ${{ steps.parse_name.outputs.homework_name }}
+
+  java_path:
+    description: 'Path of Java installation'
+    value: ${{ steps.setup-java.outputs.path }}
+
 runs:
   using: 'composite'
   steps:
@@ -21,3 +30,17 @@ runs:
         fi
 
         echo "::error ::Repository ${GITHUB_REPOSITORY} in an unexpected format; cannot parse."
+
+    ## homework must be cloned into working directory
+    ## otherwise will break github classroom autograder
+
+    - name: Clone homework repository
+      uses: actions/checkout@v3
+
+    - name: List homework files and commits
+      shell: bash
+      run: |
+        echo ""
+        echo "Listing homework files..."
+        find . -not -path '*/.*' -type f
+
