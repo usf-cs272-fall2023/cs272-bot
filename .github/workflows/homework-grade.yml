@@ -1,0 +1,20 @@
+name: Homework Grade
+
+on:
+  workflow_call:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Setup homework environment
+        id: homework_setup
+        uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main

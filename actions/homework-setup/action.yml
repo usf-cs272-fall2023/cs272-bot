@@ -1,0 +1,23 @@
+name: 'Setup Homework'
+description: 'Setup environment for testing homework'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Parse homework name
+      id: parse_name
+      shell: bash
+      run: |
+        echo ""
+        echo "Working: $(pwd)"
+        echo "Repository: ${GITHUB_REPOSITORY}"
+
+        if [[ ${GITHUB_REPOSITORY} =~ .+\/homework-([^-]+)-.+ ]]; then
+          export HOMEWORK_NAME=${BASH_REMATCH[1]}
+          echo "Homework Name: ${HOMEWORK_NAME}"
+          echo "HOMEWORK_NAME=${HOMEWORK_NAME}" >> $GITHUB_ENV
+          echo "homework_name=${HOMEWORK_NAME}" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        echo "::error ::Repository ${GITHUB_REPOSITORY} in an unexpected format; cannot parse."
