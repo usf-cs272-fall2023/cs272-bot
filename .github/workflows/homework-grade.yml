@@ -14,7 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    outputs:
+      homework_name: ${{ steps.homework_setup.outputs.homework_name }}
+      java_path: ${{ steps.homework_setup.outputs.homework_name }}
+      points: ${{ steps.autograder.outputs.points }}
+
     steps:
       - name: Setup homework environment
         id: homework_setup
         uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
+
+      - name: Run GitHub autograder
+        id: autograder
+        uses: education/autograding@v1
