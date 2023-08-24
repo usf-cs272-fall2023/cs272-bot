@@ -84,16 +84,18 @@ runs:
       id: setup-test
       shell: bash
       run: |
+        echo "Listing template files..."
+        find ${TEMPLATE_DIR}/template -not -path '*/.*' -type f
+
         echo ""
-        echo "Template Tests:"
-        ls -CGR ${TEMPLATE_DIR}/template/src/test/
+        echo "Moving clean test files..."
         rm -rf src/test
         mv -fv ${TEMPLATE_DIR}/template/src/test src/
         mv -fv ${TEMPLATE_DIR}/template/pom.xml .
-
+        
         echo ""
-        echo "Copied Tests:"
-        ls -CGR src/test/
+        echo "Listing clean test files..."
+        find src/test/ -not -path '*/.*' -type f
 
     # setup java
     # https://github.com/actions/setup-java
