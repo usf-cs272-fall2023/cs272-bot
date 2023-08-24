@@ -103,3 +103,19 @@ runs:
         mvn -f pom.xml -ntp --quiet "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=false" "-Dmaven.compiler.showWarnings=false" clean compile test-compile
         find target/ -not -path '*/.*' -type f -iname "*.class"
         echo ""
+
+    # have to substitute all environment variables into the command files
+    # since the autograder cannot access environment variables itself
+
+    - shell: bash
+      run: |
+        echo "Generating commands..."
+        cp ${{ github.action_path }}/*.sh .
+        ls -aCG *.sh
+        for command_file in *.sh; do
+          envsubst < ${command_file} > ${command_file}.txt
+          mv ${command_file}.txt ${command_file}
+          echo ""
+          echo "Updated: ${command_file}"
+          cat ${command_file}
+        done
