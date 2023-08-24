@@ -23,8 +23,7 @@ runs:
       id: parse_name
       shell: bash
       run: |
-        echo ""
-        echo "Working: $(pwd)"
+        echo "\nWorking: $(pwd)"
         echo "Repository: ${GITHUB_REPOSITORY}"
 
         if [[ ${GITHUB_REPOSITORY} =~ .+\/homework-([^-]+)-.+ ]]; then
@@ -32,6 +31,7 @@ runs:
           echo "Homework Name: ${HOMEWORK_NAME}"
           echo "HOMEWORK_NAME=${HOMEWORK_NAME}" >> $GITHUB_ENV
           echo "homework_name=${HOMEWORK_NAME}" >> $GITHUB_OUTPUT
+          echo ""
           exit 0
         fi
 
@@ -46,8 +46,7 @@ runs:
     - name: List homework files and commits
       shell: bash
       run: |
-        echo ""
-        echo "Listing homework files..."
+        echo "\nListing homework files..."
         find . -not -path '*/.*' -type f
 
     # check number of commits in repository
@@ -70,6 +69,7 @@ runs:
     - name: Make temporary directory
       shell: bash
       run: |
+        echo ""
         TEMPLATE_DIR=$(mktemp -d ~/template-XXXX)
         echo "Temporary Directory: ${TEMPLATE_DIR}"
         echo "TEMPLATE_DIR=${TEMPLATE_DIR}" >> $GITHUB_ENV
@@ -84,6 +84,7 @@ runs:
       id: setup-test
       shell: bash
       run: |
+        echo ""
         echo "Listing template files..."
         find ${TEMPLATE_DIR}/template -not -path '*/.*' -type f
 
