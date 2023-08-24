@@ -104,6 +104,7 @@ jobs:
         
       - name: Calculate non-late deductions
         uses: usf-cs272-fall2023/cs272-bot/actions/homework-deductions@main
+        id: calc_other_deductions
         with:
           compile_status: ${{ needs.test.outputs.compile_status }}
           javadoc_status: ${{ needs.test.outputs.javadoc_status }}
