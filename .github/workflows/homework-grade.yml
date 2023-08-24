@@ -18,6 +18,7 @@ jobs:
       homework_name: ${{ steps.homework_setup.outputs.homework_name }}
       java_path: ${{ steps.homework_setup.outputs.homework_name }}
       points: ${{ steps.autograder.outputs.points }}
+      autograder_status: ${{ steps.autograder.outcome }}
 
     steps:
       - name: Setup homework environment
@@ -33,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: test
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && (needs.test.outputs.autograder_status == 'success' || needs.test.outputs.autograder_status == 'failure') }}
 
     steps:
       - name: Verify test outcomes
