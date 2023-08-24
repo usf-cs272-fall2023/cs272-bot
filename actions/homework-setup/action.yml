@@ -1,25 +1,24 @@
 name: 'Setup Homework'
 description: 'Setup environment for testing homework'
 
-inputs:
-  min_commits:
-    description: Minimum number of commits required to earn credit
-    type: number
-    default: 3
-    required: false
-
 outputs:
   homework_name:
     description: 'Name of homework parsed from repository name'
     value: ${{ steps.parse_name.outputs.homework_name }}
 
+  found_commits:
+    description: 'Number of commits found'
+    value: ${{ steps.check_commits.outputs.path }}
+
   java_path:
     description: 'Path of Java installation'
-    value: ${{ steps.setup-java.outputs.path }}
+    value: ${{ steps.setup_java.outputs.path }}
 
 runs:
   using: 'composite'
   steps:
+    # parse homework name from repository name
+
     - name: Parse homework name
       id: parse_name
       shell: bash
@@ -38,8 +37,8 @@ runs:
 
         echo "::error ::Repository ${GITHUB_REPOSITORY} in an unexpected format; cannot parse."
 
-    ## homework must be cloned into working directory
-    ## otherwise will break github classroom autograder
+    # homework must be cloned into working directory
+    # otherwise will break github classroom autograder
 
     - name: Clone homework repository
       uses: actions/checkout@v3
@@ -51,20 +50,12 @@ runs:
         echo "Listing homework files..."
         find . -not -path '*/.*' -type f
 
-    ## check if repository has minimum number of commits
-    ## uses 1 as default if missing
+    # check number of commits in repository
 
-    - name: Check minimum number of commits
+    - name: Check number of commits
+      id: check_commits
       shell: bash
       run: |
-        MIN_COMMITS=$((${{ inputs.min_commits }}))
-        if [[ ${MIN_COMMITS} -le 0 ]]; then
-          MIN_COMMITS=$((1))
-        fi
-
-        echo "Min Commits: ${MIN_COMMITS}"
-        echo "MIN_COMMITS=${MIN_COMMITS}" >> $GITHUB_ENV
-
         echo ""
         echo "Listing commits..."
         git fetch --unshallow
@@ -72,4 +63,46 @@ runs:
 
         echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
         echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
-        echo "Found ${NUM_COMMITS} commits; at least ${MIN_COMMITS} commits required."
+        echo "Found ${NUM_COMMITS} commits."
+
+    # get clean test files from template repository
+
+    - name: Make temporary directory
+      shell: bash
+      run: |
+        TEMPLATE_DIR=$(mktemp -d ~/template-XXXX)
+        echo "Temporary Directory: ${TEMPLATE_DIR}"
+        echo "TEMPLATE_DIR=${TEMPLATE_DIR}" >> $GITHUB_ENV
+
+    - name: Checkout template repository
+      shell: bash
+      run: |
+        TEMPLATE_REPO="https://github-actions:${{ github.token }}@github.com/${{ github.repository_owner }}/homework-${HOMEWORK_NAME}-template.git"
+        git clone --depth 1 "${TEMPLATE_REPO}" ${TEMPLATE_DIR}/template
+
+    - name: Setup clean test environment
+      id: setup-test
+      shell: bash
+      run: |
+        echo ""
+        echo "Template Tests:"
+        ls -CGR ${TEMPLATE_DIR}/template/src/test/
+        rm -rf src/test
+        mv -fv ${TEMPLATE_DIR}/template/src/test src/
+        mv -fv ${TEMPLATE_DIR}/template/pom.xml .
+
+        echo ""
+        echo "Copied Tests:"
+        ls -CGR src/test/
+
+    # setup java
+    # https://github.com/actions/setup-java
+
+    - name: Setup Java JDK 17
+      id: setup_java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'maven'
+
