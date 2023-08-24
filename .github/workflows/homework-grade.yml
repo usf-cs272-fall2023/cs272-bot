@@ -27,3 +27,5 @@ jobs:
       - name: Run GitHub autograder
         id: autograder
         uses: education/autograding@v1
+
+  # TODO: Add checking commits, warnings, deadline to grade job, add badge
