@@ -37,18 +37,23 @@ jobs:
     if: ${{ !cancelled() && (needs.test.outputs.autograder == 'success' || needs.test.outputs.autograder == 'failure') }}
 
     steps:
-      - name: Verify test outcomes
-        env:
-          HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
-          JAVA_PATH: ${{ needs.test.outputs.java_path }}
-          POINTS: ${{ needs.test.outputs.points }}
-          AUTOGRADER: ${{ needs.test.outputs.autograder }}
-        shell: bash
-        run: |
-          echo "  Homework: ${HOMEWORK_NAME}"
-          echo " Java Path: ${JAVA_PATH}"
-          echo "    Points: ${POINTS}"
-          echo "Autograder: ${AUTOGRADER}"
+      - name: Output autograder results
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(context);
+            
+        #   env:
+        #   HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
+        #   JAVA_PATH: ${{ needs.test.outputs.java_path }}
+        #   POINTS: ${{ needs.test.outputs.points }}
+        #   AUTOGRADER: ${{ needs.test.outputs.autograder }}
+        # shell: bash
+        # run: |
+        #   echo "  Homework: ${HOMEWORK_NAME}"
+        #   echo " Java Path: ${JAVA_PATH}"
+        #   echo "    Points: ${POINTS}"
+        #   echo "Autograder: ${AUTOGRADER}"
 
 
     # TODO: Add checking commits, warnings, deadline to grade job, add badge
