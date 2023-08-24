@@ -45,6 +45,7 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
+          echo "::stop-commands::#SUPPRESS_ERROR_ANNOTATIONS#"
           mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
       # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
@@ -57,6 +58,7 @@ jobs:
         shell: bash
         run: |
           mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+          exit 1
 
       # check while we still have the repository checked out
       # run this step even if the autograder failed (but not if it was skipped or cancelled)

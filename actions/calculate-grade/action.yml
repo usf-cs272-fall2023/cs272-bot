@@ -1,18 +1,29 @@
 name: 'Calculate Grade'
 description: 'Calculate grade for an assignment'
 
-outputs:
-  homework_name:
-    description: 'Name of homework parsed from repository name'
-    value: ${{ steps.parse_name.outputs.homework_name }}
+inputs:
+  assignment_name:
+    description: 'Assignment name'
+    required: true
 
-  java_path:
-    description: 'Path of Java installation'
-    value: ${{ steps.setup_java.outputs.path }}
+  starting_points:
+    description: 'Earned points before penalties'
+    default: '100'
+    required: true
+
+  submitted_date:
+    description: 'Date submitted (ISO format)'
+    required: false
+
 
 runs:
   using: 'composite'
   steps:
+      # install luxon to calculate late penalties
+      - shell: bash
+        run: npm install luxon
+
+
     # step names in composite actions are not output
 
     - id: parse_name
