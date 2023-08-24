@@ -28,4 +28,24 @@ jobs:
         id: autograder
         uses: education/autograding@v1
 
-  # TODO: Add checking commits, warnings, deadline to grade job, add badge
+  grade:
+    name: Grade
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: test
+    if: ${{ !cancelled() }}
+
+    steps:
+      - name: Verify test outcomes
+        env:
+          HOMEWORK_NAME: ${{ needs.test.outputs.homework_name }}
+          JAVA_PATH: ${{ needs.test.outputs.java_path }}
+          POINTS: ${{ needs.test.outputs.points }}
+        shell: bash
+        run: |
+          echo " Homework: ${HOMEWORK_NAME}"
+          echo "Java Path: ${JAVA_PATH}"
+          echo "   Points: ${POINTS}"
+
+
+    # TODO: Add checking commits, warnings, deadline to grade job, add badge
