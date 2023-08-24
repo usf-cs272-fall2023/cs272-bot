@@ -125,8 +125,11 @@ runs:
 
     - shell: bash
       run: |
-        echo "Configuring maven logger..."
-        cd /usr/share/apache-maven-3.8.8/conf
-        ls -laR
-        mkdir -p ~/.m2/conf/logging/
-        cp ${{ github.action_path }}/simplelogger.properties /usr/share/apache-maven-3.8.8/conf/logging/simplelogger.properties
+        echo "Outputting current log configuration..."
+        cd /usr/share/apache-maven-3.8.8/conf/logging/
+        cat simplelogger.properties
+
+        echo ""
+        echo "Outputting new log configuration..."
+        cp ${{ github.action_path }}/simplelogger.properties .
+        cat simplelogger.properties
