@@ -121,9 +121,11 @@ runs:
         done
 
     # TODO: avoid hard-coded maven path
+    # disable all log output except for test output
 
     - shell: bash
       run: |
+        echo "Configuring maven logger..."
         cd /usr/share/apache-maven-3.8.8/conf
         ls -laR
         mkdir -p ~/.m2/conf/logging/
