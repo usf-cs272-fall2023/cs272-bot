@@ -20,7 +20,7 @@ runs:
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
-        MIN_COMMITS: 3
+        MIN_COMMITS: 6
       with:
         # using separate file for better syntax highlighting
         script: |
