@@ -28,4 +28,4 @@ runs:
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);
-          return await script({core});
+          return await script({core, exec});
