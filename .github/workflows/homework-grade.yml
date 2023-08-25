@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 jobs:
-  grade:
-    name: Grade
+  main:
+    name: Main
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -40,6 +40,52 @@ jobs:
           POINTS: ${{ inputs.points }}
         run: |
           echo "Hello world ${POINTS}"
+
+      - name: Output grade after late and other deductions
+        uses: actions/github-script@v6
+        env:
+          POINTS: ${{ inputs.points }}
+        with:
+          script: |
+            const workflow_run = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.runId
+            });
+
+            const suite_url = workflow_run.data.check_suite_url;
+            const suite_id = parseInt(suite_url.match(/[0-9]+$/)[0], 10);
+            
+            const check_runs = await github.rest.checks.listForSuite({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              check_name: 'Autograding',
+              check_suite_id: suite_id,
+            });
+          
+            let text = process.env.POINTS;
+            text = 'Points 10/5';
+            
+            await github.rest.checks.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              check_run_id: check_runs.data.check_runs[0].id,
+              output: {
+                title: 'Autograding',
+                summary: text,
+                text: text,
+                annotations: [
+                  {
+                    path: '.github',
+                    start_line: 1,
+                    end_line: 1,
+                    annotation_level: 'notice',
+                    message: text,
+                    title: 'Autograding complete',
+                  },
+                ],
+              },
+            });
 
       # - name: Setup homework environment
       #   id: homework_setup
