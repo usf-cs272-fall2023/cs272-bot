@@ -3,7 +3,6 @@ module.exports = async ({core, exec}) => {
     core.startGroup('Listing commits...');
     await exec.exec('git fetch --unshallow');
     await exec.exec('git log --oneline refs/remotes/origin/main');
-    core.endGroup();
 
     const min_commits = parseInt(process.env.MIN_COMMITS);
     const options = {};
@@ -17,15 +16,14 @@ module.exports = async ({core, exec}) => {
     };
 
     await exec.exec('git rev-list --count refs/remotes/origin/main', '', options);
-    core.info(`Found at least ${num_commits} commits.`);
+    core.endGroup();
 
-    
-    // const num_commits = parseInt(process.env.NUM_COMMITS);
-
-    // if (num_commits < min_commits) {
+    if (num_commits < min_commits) {
       core.error(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': '-5 Points'});
       process.exitCode = 1;
-    // }
+    }
+    
+    core.info(`Found at least ${num_commits} commits.`);
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);

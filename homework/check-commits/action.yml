@@ -2,29 +2,18 @@ name: 'Check Commits'
 description: 'Checks that a minimum number of commits have been made'
 
 runs:
+  # use composite and github-script instead of javascript so that 
+  # do not have to maintain the node modules post-semester
+
   using: 'composite'
   steps:
-    # - id: fetch_commits
-    #   shell: bash
-    #   run: |
-    #     echo "::group::Listing commits..."
-    #     git fetch --unshallow
-    #     git log --oneline refs/remotes/origin/main
-        
-    #     NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
-    #     echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
-    #     echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
-    #     echo "::endgroup::"
-
-    #     echo ""
-    #     echo "Found Commits: ${NUM_COMMITS} (at least)"
-
     - id: check_commits
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
         MIN_COMMITS: 3
       with:
+        # using separate file for better syntax highlighting
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);
           return await script({core, exec});
