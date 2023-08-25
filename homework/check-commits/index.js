@@ -16,7 +16,7 @@ module.exports = async ({core, exec}) => {
       }
     };
 
-    await exec.exec('git rev-list --count refs/remotes/origin/main', options);
+    await exec.exec('git rev-list --count refs/remotes/origin/main', '', options);
     core.info(`Found at least ${num_commits} commits.`);
 
     
