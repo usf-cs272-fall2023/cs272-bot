@@ -55,8 +55,9 @@ module.exports = async ({github, context, core}) => {
       check_run_id: check_runs.data.check_runs[0].id,
       output: {
         title: 'Autograding',
-        summary: 'Points 1/2',
-        text: 'Points 2/3',
+        // (points_awarded) value used by classroom (points_available not exporting correctly)
+        summary: final_grade,
+        text: final_grade, 
         annotations: [
           {
             path: '.github',
@@ -64,7 +65,7 @@ module.exports = async ({github, context, core}) => {
             end_line: 1,
             annotation_level: 'notice',
             message: 'Points 3/4',
-            title: 'Autograding complete',
+            title: `Testing`,
           },
         ],
       },
