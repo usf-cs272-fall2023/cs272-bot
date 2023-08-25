@@ -1,6 +1,15 @@
 name: 'Check Commits'
 description: 'Checks that a minimum number of commits have been made'
 
+outputs:
+  num_commits:
+    description: 'Number of commits found'
+    value: ${{ steps.check_commits.outputs.num_commits }}
+
+  min_commits:
+    description: 'Minimum number of commits'
+    value: ${{ steps.check_commits.outputs.min_commits }}
+
 runs:
   # use composite and github-script instead of javascript so that 
   # do not have to maintain the node modules post-semester
