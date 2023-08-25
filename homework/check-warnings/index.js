@@ -1,11 +1,21 @@
 module.exports = async ({core, exec}) => {
   try {
-    const compile = `${process.env.COMPILE}`.toLowerCase() === 'true';
-    const javadoc = `${process.env.JAVADOC}`.toLowerCase() === 'true';
+    let xlint = 'none';
+    let xdoclint = 'none';
+    let types = [];
 
-    const xlint = compile ? 'all,-path,-processing' : 'none';
-    const xdoclint = javadoc ? 'all/private' : 'none';
+    if (`${process.env.COMPILE}`.toLowerCase() === 'true') {
+      xlint = 'all,-path,-processing';
+      xlint = 'all';
+      types.push('compiler');
+    }
 
+    if (`${process.env.JAVADOC}`.toLowerCase() === 'true') {
+      xdoclint = 'all/private';
+      types.push('javadoc');
+    }
+
+    // -D flags based on pom.xml properties
     const args = [
       '-f', 'pom.xml', '-ntp', 
       `"-Dconfig.xlint=-Xlint:${xlint}"`,
@@ -16,12 +26,11 @@ module.exports = async ({core, exec}) => {
     ];
 
     const result = await exec.exec('mvn', args);
-    console.log(result);
-
-    // if (num_commits < min_commits) {
-    //   core.error(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': '-5 Points'});
-    //   process.exitCode = 1;
-    // }
+    
+    if (result !== 0) {
+      core.error(`Found 1 or more ${types.join(' and ')} warnings.`);
+      process.exitCode = result;
+    }
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
