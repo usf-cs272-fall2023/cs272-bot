@@ -17,19 +17,19 @@ module.exports = async ({github, context, core}) => {
 
     if (late_points > 0) {
       core.warning(`Submitted ${late_multiplier} day(s) late (submitted: ${submitted_text}, deadline: ${deadline_text}).`, {'title': `-${late_points} Points`});
-      deductions -= late_points;
+      deductions += late_points;
     }
 
     if (process.env.COMPILE_STATUS !== 'success') {
       const amount = 5;
       core.warning(`Found 1 or more compiler warning(s).`, {'title': `-${amount} Points`});
-      deductions -= amount;
+      deductions += amount;
     }
 
     if (process.env.JAVADOC_STATUS !== 'success') {
       const amount = 5;
       core.warning(`Found 1 or more Javadoc warning(s).`, {'title': `-${amount} Points`});
-      deductions -= amount;
+      deductions += amount;
     }
 
     if (process.env.COMMITS_STATUS !== 'success') {
@@ -37,7 +37,7 @@ module.exports = async ({github, context, core}) => {
       const num_commits = parseInt(process.env.NUM_COMMITS);
       const min_commits = parseInt(process.env.MIN_COMMITS);
       core.warning(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': `-${amount} Points`});
-      deductions -= amount;
+      deductions += amount;
     }
 
     core.setOutput('deductions', deductions);
@@ -81,8 +81,8 @@ module.exports = async ({github, context, core}) => {
             start_line: 1,
             end_line: 1,
             annotation_level: 'notice',
-            message: final_grade,
-            title: `Autograding complete`,
+            message: `Earned ${final_points} points total after deductions (-${deductions} points).`,
+            title: `${final_points}/${grade_possible} Points`,
           },
         ],
       },

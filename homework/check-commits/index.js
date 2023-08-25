@@ -19,7 +19,7 @@ module.exports = async ({core, exec}) => {
     core.info(result);
     core.endGroup();
 
-    core.info(`Found at least ${num_commits} commits.`);
+    core.info(`Found at least ${num_commits} commits (${min_commits} required).`);
     core.setOutput('num_commits', num_commits);
     core.setOutput('min_commits', min_commits);
 
