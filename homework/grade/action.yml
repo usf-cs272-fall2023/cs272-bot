@@ -41,7 +41,15 @@ runs:
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
-        INPUTS: ${{ inputs }}
+        COMPILE_STATUS: ${{ inputs.compile_status }}
+        JAVADOC_STATUS: ${{ inputs.javadoc_status }}
+        COMMITS_STATUS: ${{ inputs.commits_status }}
+        GRADE_STARTING: ${{ inputs.grade_starting }}
+        GRADE_POSSIBLE: ${{ inputs.grade_possible }}
+        GRADE_POINTS: ${{ inputs.grade_points }}
+        LATE_POINTS: ${{ inputs.late_points }}
+        LATE_MULTIPLIER: ${{ inputs.late_multiplier }}
+
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);
