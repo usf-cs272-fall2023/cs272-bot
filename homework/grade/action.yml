@@ -1,7 +1,27 @@
-name: 'Pending'
-description: 'Pending'
+name: Homework Grade
+description: Calculate homework grade with deductions and late penalties
 
 inputs:
+  assignment_name:
+    required: false
+    type: string
+
+  points:
+    required: false
+    type: string
+
+  compile_status:
+    required: false
+    type: string
+
+  javadoc_status:
+    required: false
+    type: string
+
+  commits_status:
+    required: false
+    type: string
+
   compiler:
     description: 'Enable checking compiler warnings'
     required: false
