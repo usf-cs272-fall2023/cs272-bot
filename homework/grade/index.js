@@ -1,14 +1,20 @@
 module.exports = async ({github, context, core}) => {
   try {
-      const grade_results = JSON.parse(process.env.GRADE_RESULTS);
-      core.log(grade_results.grade_starting);
-      core.log(grade_results);
-    // const grade_starting = parseFloat(process.env.GRADE_STARTING);
+    const grade_results = JSON.parse(process.env.GRADE_RESULTS);
 
-    // // output points earned from tests before handle deductions
-    // core.notice(`Earned ${grade_starting} from tests before any deductions`, {'title': `+${grade_starting} Points`});
+    const grade_starting = parseFloat(grade_results.grade_starting);
+    const grade_possible = parseFloat(grade_results.grade_possible);
+    const late_points = parseFloat(grade_results.late_points);
+    const late_multiplier = parseFloat(grade_results.late_multiplier);
+    const submitted_text = grade_results.submitted_text;
+    const deadline_text = grade_results.deadline_text;
 
-    // let grade_points = parseFloat(process.env.GRADE_POINTS);
+    // output points earned from tests before handle deductions
+    core.notice(`Earned ${grade_starting} points from tests before any deductions.`, {'title': `+${grade_starting} Points`});
+
+    if (late_points > 0) {
+      core.warning(`Submitted ${late_multiplier} day(s) late (submitted: ${submitted_text}, deadline: ${deadline_text}).`, {'title': `-${late_points}`});
+    }
 
     // core.info(`Deducted grade by -${process.env.LATE_POINTS} due to late penalty.`);
 
