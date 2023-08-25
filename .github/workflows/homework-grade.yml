@@ -38,136 +38,136 @@ jobs:
         id: autograder
         uses: education/autograding@v1
 
-      # must be after autograder to avoid compile issues
-      # run this step even if the autograder failed (but not if it was skipped or cancelled)
-      - name: Check for compile warnings
-        id: check_compile
-        if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
-        shell: bash
-        run: |
-          if ! mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile;
-          then
-            echo "::error::Found 1 or more compile warnings."
-          fi
+  #     # must be after autograder to avoid compile issues
+  #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
+  #     - name: Check for compile warnings
+  #       id: check_compile
+  #       if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
+  #       shell: bash
+  #       run: |
+  #         if ! mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile;
+  #         then
+  #           echo "::error::Found 1 or more compile warnings (-5 points)."
+  #         fi
 
-      # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+  #     # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
-      # must be after autograder to avoid compile issues
-      # run this step even if the autograder failed (but not if it was skipped or cancelled)
-      - name: Check for Javadoc warnings
-        id: check_javadoc
-        if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
-        shell: bash
-        run: |
-          stoptoken=$(uuidgen)
-          echo "::stop-commands::${stoptoken}"
-          mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
-          exit 1
+  #     # must be after autograder to avoid compile issues
+  #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
+  #     - name: Check for Javadoc warnings
+  #       id: check_javadoc
+  #       if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
+  #       shell: bash
+  #       run: |
+  #         if ! mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+  #         then
+  #           echo "::error::Found 1 or more compile warnings (-5 points)."
+  #         fi
 
-      # check while we still have the repository checked out
-      # run this step even if the autograder failed (but not if it was skipped or cancelled)
-      - name: Check for minimum number of commits
-        id: check_commits
-        if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
-        shell: bash
-        env:
-          MIN_COMMITS: 3
-        run: |
-          echo "Listing commits..."
-          git fetch --unshallow
-          git log --oneline refs/remotes/origin/main
+  #     # check while we still have the repository checked out
+  #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
+  #     - name: Check for minimum number of commits
+  #       id: check_commits
+  #       if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
+  #       shell: bash
+  #       env:
+  #         MIN_COMMITS: 3
+  #       run: |
+  #         echo "Listing commits..."
+  #         git fetch --unshallow
+  #         git log --oneline refs/remotes/origin/main
           
-          NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
-          echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
-          echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
+  #         NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
+  #         echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
+  #         echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
 
-          echo ""
-          echo "Minimum Commits: ${MIN_COMMITS}"
-          echo "Found Commits: ${NUM_COMMITS} (at least)"
+  #         echo ""
+  #         echo "Minimum Commits: ${MIN_COMMITS}"
+  #         echo "Found Commits: ${NUM_COMMITS} (at least)"
 
-          if [[ ${NUM_COMMITS} -ge ${MIN_COMMITS} ]]; then
-            exit 0
-          fi
+  #         if [[ ${NUM_COMMITS} -ge ${MIN_COMMITS} ]]; then
+  #           exit 0
+  #         fi
 
-          stoptoken=$(uuidgen)
-          echo "::stop-commands::${stoptoken}"
-          exit 1
+  #         stoptoken=$(uuidgen)
+  #         echo "::stop-commands::${stoptoken}"
+  #         exit 1
 
-  grade:
-    name: Autograding # need a check named "Autograding"
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: test
-    if: ${{ !cancelled() && (needs.test.outputs.autograder == 'success' || needs.test.outputs.autograder == 'failure') }}
+  # grade:
+  #   name: Autograding # need a check named "Autograding"
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 5
+  #   needs: test
+  #   if: ${{ !cancelled() && (needs.test.outputs.autograder == 'success' || needs.test.outputs.autograder == 'failure') }}
 
-    steps:
-      - name: Output autograder results
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const outputs = ${{ toJSON(needs.test.outputs) }};
+  #   steps:
+  #     - name: Output autograder results
+  #       uses: actions/github-script@v6
+  #       with:
+  #         script: |
+  #           const outputs = ${{ toJSON(needs.test.outputs) }};
 
-            for (const property in outputs) {
-              core.info(`${property}: ${outputs[property]}`);
-              core.setOutput(property, outputs[property]);
-            }
+  #           for (const property in outputs) {
+  #             core.info(`${property}: ${outputs[property]}`);
+  #             core.setOutput(property, outputs[property]);
+  #           }
         
-      - name: Calculate non-late deductions
-        uses: usf-cs272-fall2023/cs272-bot/actions/homework-deductions@main
-        id: calc_other_deductions
-        with:
-          compile_status: ${{ needs.test.outputs.compile_status }}
-          javadoc_status: ${{ needs.test.outputs.javadoc_status }}
-          commits_status: ${{ needs.test.outputs.commits_status }}
+  #     - name: Calculate non-late deductions
+  #       uses: usf-cs272-fall2023/cs272-bot/actions/homework-deductions@main
+  #       id: calc_other_deductions
+  #       with:
+  #         compile_status: ${{ needs.test.outputs.compile_status }}
+  #         javadoc_status: ${{ needs.test.outputs.javadoc_status }}
+  #         commits_status: ${{ needs.test.outputs.commits_status }}
 
-      # trick github classroom by creating an annotation just right
-      # https://github.com/education/autograding/blob/master/src/output.ts
+  #     # trick github classroom by creating an annotation just right
+  #     # https://github.com/education/autograding/blob/master/src/output.ts
 
-      - name: Output grade after late and other deductions
-        uses: actions/github-script@v6
-        env:
-          POINTS: '${{ needs.test.outputs.points }}'
-        with:
-          script: |
-            const workflow_run = await github.rest.actions.getWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId
-            });
+  #     - name: Output grade after late and other deductions
+  #       uses: actions/github-script@v6
+  #       env:
+  #         POINTS: '${{ needs.test.outputs.points }}'
+  #       with:
+  #         script: |
+  #           const workflow_run = await github.rest.actions.getWorkflowRun({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             run_id: context.runId
+  #           });
 
-            const suite_url = workflow_run.data.check_suite_url;
-            const suite_id = parseInt(suite_url.match(/[0-9]+$/)[0], 10);
+  #           const suite_url = workflow_run.data.check_suite_url;
+  #           const suite_id = parseInt(suite_url.match(/[0-9]+$/)[0], 10);
             
-            const check_runs = await github.rest.checks.listForSuite({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              check_name: 'Autograding',
-              check_suite_id: suite_id,
-            });
+  #           const check_runs = await github.rest.checks.listForSuite({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             check_name: 'Autograding',
+  #             check_suite_id: suite_id,
+  #           });
           
-            let text = process.env.POINTS;
-            text = 'Points 10/5';
+  #           let text = process.env.POINTS;
+  #           text = 'Points 10/5';
             
-            await github.rest.checks.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              check_run_id: check_runs.data.check_runs[0].id,
-              output: {
-                title: 'Autograding',
-                summary: text,
-                text: text,
-                annotations: [
-                  {
-                    path: '.github',
-                    start_line: 1,
-                    end_line: 1,
-                    annotation_level: 'notice',
-                    message: text,
-                    title: 'Autograding complete',
-                  },
-                ],
-              },
-            });
+  #           await github.rest.checks.update({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             check_run_id: check_runs.data.check_runs[0].id,
+  #             output: {
+  #               title: 'Autograding',
+  #               summary: text,
+  #               text: text,
+  #               annotations: [
+  #                 {
+  #                   path: '.github',
+  #                   start_line: 1,
+  #                   end_line: 1,
+  #                   annotation_level: 'notice',
+  #                   message: text,
+  #                   title: 'Autograding complete',
+  #                 },
+  #               ],
+  #             },
+  #           });
 
       # try {
       #   const points = process.env.POINTS;
