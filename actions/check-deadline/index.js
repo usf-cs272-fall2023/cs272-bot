@@ -90,7 +90,7 @@ module.exports = async ({github, context, core, constants, DateTime, Settings, f
       throw new Error(`Possible points must be positive: ${possible_points}`);
     }
 
-    if (!(starting_points) > 0) {
+    if (!(starting_points) >= 0) {
       throw new Error(`Starting points must be positive: ${starting_points}`);
     }
 
