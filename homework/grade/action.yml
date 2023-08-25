@@ -2,10 +2,6 @@ name: Homework Grade
 description: Calculate homework grade with deductions and late penalties
 
 inputs:
-  grade_output:
-    required: false
-    type: string
-
   compile_status:
     required: false
     type: string
@@ -15,6 +11,26 @@ inputs:
     type: string
 
   commits_status:
+    required: false
+    type: string
+
+  grade_starting:
+    required: false
+    type: string
+
+  grade_possible:
+    required: false
+    type: string
+
+  grade_points:
+    required: false
+    type: string
+
+  late_points:
+    required: false
+    type: string
+
+  late_multiplier:
     required: false
     type: string
 
