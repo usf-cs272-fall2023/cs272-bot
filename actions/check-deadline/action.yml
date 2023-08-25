@@ -15,46 +15,46 @@ inputs:
     description: 'Date submitted (ISO format)'
     required: false
 
-# outputs:
-#   assignment_name:
-#     description: 'Name of assignment'
+outputs:
+  assignment_name:
+    description: 'Name of assignment'
 
-#   submitted_iso:
-#     description: 'Submitted (in ISO format)'
-#   submitted_text:
-#     description: 'Submitted (in readable text)'
+  submitted_iso:
+    description: 'Submitted (in ISO format)'
+  submitted_text:
+    description: 'Submitted (in readable text)'
 
-#   deadline_iso:
-#     description: 'Deadline (in ISO format)'
-#   deadline_text:
-#     description: 'Deadline (in readable text)'
+  deadline_iso:
+    description: 'Deadline (in ISO format)'
+  deadline_text:
+    description: 'Deadline (in readable text)'
 
-#   late_interval:
-#     description: 'Late interval (in hours, 0 if not late)'
-#   late_multiplier:
-#     description: 'Late penalty multiplier'
+  late_interval:
+    description: 'Late interval (in hours, 0 if not late)'
+  late_multiplier:
+    description: 'Late penalty multiplier'
 
-#   late_percent:
-#     description: 'Late penalty (in percent)'
-#   late_points:
-#     description: 'Late penalty (in points)'
+  late_percent:
+    description: 'Late penalty (in percent)'
+  late_points:
+    description: 'Late penalty (in points)'
 
-#   grade_starting:
-#     description: 'Earned points before late penalties'
-#   grade_possible:
-#     description: 'Total points possible'
-#   grade_points:
-#     description: 'Late grade (in points)'
-#   grade_percent:
-#     description: 'Late grade (in percent)'
+  grade_starting:
+    description: 'Earned points before late penalties'
+  grade_possible:
+    description: 'Total points possible'
+  grade_points:
+    description: 'Late grade (in points)'
+  grade_percent:
+    description: 'Late grade (in percent)'
 
-#   results_name:
-#     description: 'Name of results artifact'
-#   results_json:
-#     description: 'Name of results JSON file'
+  results_name:
+    description: 'Name of results artifact'
+  results_json:
+    description: 'Name of results JSON file'
 
-#   workflow_run:
-#     description: 'Workflow run that generated these results'
+  workflow_run:
+    description: 'Workflow run that generated these results'
 
 runs:
   # use composite and github-script instead of javascript so that 
