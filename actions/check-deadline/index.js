@@ -83,7 +83,7 @@ module.exports = async ({github, context, core, constants, DateTime, Settings}) 
     // process possible and starting points
     const possible_points = parseFloat(assignment.max);
 
-    const points_text = process.env.POINTS; // earned/possible
+    const points_text = process.env.STARTING_POINTS; // earned/possible
     const starting_points = parseFloat(points_text.split("/", 1)[0].trim());
 
     if (!(possible_points > 0)) {
