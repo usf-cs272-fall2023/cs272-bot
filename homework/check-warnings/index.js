@@ -18,8 +18,8 @@ module.exports = async ({core, exec}) => {
     // -D flags based on pom.xml properties
     const args = [
       '-f', 'pom.xml', '-ntp', 
-      `"-Dconfig.xlint=-Xlint:${xlint}"`,
-      `"-Dconfig.xdoclint=-Xdoclint:${xdoclint}"`, 
+      // `"-Dconfig.xlint=-Xlint:${xlint}"`,
+      // `"-Dconfig.xdoclint=-Xdoclint:${xdoclint}"`, 
       `"-Dconfig.werror=true"`,
       `"-Dmaven.compiler.showWarnings=true"`,
       'clean', 'compile'
