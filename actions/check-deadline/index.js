@@ -1,4 +1,4 @@
-module.exports = async ({github, context, core, constants, DateTime, Settings}) => {
+module.exports = async ({github, context, core, constants, DateTime, Settings, fs, artifact}) => {
   try {
     const zone = 'America/Los_Angeles';
     const eod = 'T23:59:59';
@@ -152,6 +152,18 @@ module.exports = async ({github, context, core, constants, DateTime, Settings}) 
       core.setOutput(property, output[property]);
     }
     core.endGroup();
+
+    core.startGroup('Uploading artifact...');
+    const filename = 'check-deadline-results.json';
+    fs.writeFileSync(filename, JSON.stringify(output));
+  
+    const client = artifact.create();
+    const response = await client.uploadArtifact('check-deadline-results', [filename], '.');
+    console.log(`Uploaded: ${JSON.stringify(response)}`);
+  
+    output.results_json = filename;
+    output.results_name = response.artifactName;
+    core.endGroup();    
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
