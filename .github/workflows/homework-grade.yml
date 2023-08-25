@@ -7,6 +7,18 @@ on:
         required: false
         type: string
 
+      compile_status:
+        required: false
+        type: string
+
+      javadoc_status:
+        required: false
+        type: string
+
+      commits_status:
+        required: false
+        type: string
+
 permissions:
   checks: write
   actions: read
