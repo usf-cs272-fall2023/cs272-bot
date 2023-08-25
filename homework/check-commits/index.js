@@ -7,17 +7,15 @@ module.exports = async ({core, exec}) => {
 
     // capture output for number of commits
     let num_commits = '';
-    
+
     const options = {};
     options.listeners = {
-      stdout: (data: Buffer) => {
-        num_commits = data.toString().trim();
+      stdout: (data) => {
+        num_commits = parseInt(data.toString().trim());
       }
     };
 
     await exec.exec('git rev-list --count refs/remotes/origin/main', options);
-
-    num_commits = parseInt(num_commits);
     core.info(`Found at least ${num_commits} commits.`);
 
     const min_commits = parseInt(process.env.MIN_COMMITS);
