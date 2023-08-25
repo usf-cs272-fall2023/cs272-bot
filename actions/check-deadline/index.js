@@ -86,11 +86,11 @@ module.exports = async ({github, context, core, constants, DateTime, Settings, f
     const points_text = process.env.STARTING_POINTS; // earned/possible
     const starting_points = parseFloat(points_text.split("/", 1)[0].trim());
 
-    if (!(possible_points > 0)) {
+    if (possible_points < 0) {
       throw new Error(`Possible points must be positive: ${possible_points}`);
     }
 
-    if (!(starting_points) >= 0) {
+    if (starting_points < 0) {
       throw new Error(`Starting points must be positive: ${starting_points}`);
     }
 
