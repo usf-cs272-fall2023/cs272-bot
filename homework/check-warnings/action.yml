@@ -1,6 +1,17 @@
 name: 'Pending'
 description: 'Pending'
 
+inputs:
+  compiler:
+    description: 'Enable checking compiler warnings'
+    required: false
+    default: 'true'
+
+  javadoc:
+    description: 'Enable checking Javadoc warnings'
+    required: false
+    default: 'true'
+
 runs:
   using: 'composite'
   steps:
