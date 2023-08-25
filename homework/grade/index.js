@@ -9,19 +9,36 @@ module.exports = async ({github, context, core}) => {
     const submitted_text = grade_results.submitted_text;
     const deadline_text = grade_results.deadline_text;
 
-    // output results of late penalties
-    if (late_points > 0) {
-      core.warning(`Submitted ${late_multiplier} day(s) late (submitted: ${submitted_text}, deadline: ${deadline_text}).`, {'title': `-${late_points} Points`});
-    }
-
     // output points earned from tests before handle deductions
     core.notice(`Earned ${grade_starting} points from tests before any deductions.`, {'title': `+${grade_starting} Points`});
 
-    // calculate final grade
-    let deductions = late_points;
-    deductions += process.env.COMPILE_STATUS !== 'success' ? 5 : 0;
-    deductions += process.env.JAVADOC_STATUS !== 'success' ? 5 : 0;
-    deductions += process.env.COMMITS_STATUS !== 'success' ? 5 : 0;
+    // process all deductions
+    let deductions = 0;
+
+    if (late_points > 0) {
+      core.warning(`Submitted ${late_multiplier} day(s) late (submitted: ${submitted_text}, deadline: ${deadline_text}).`, {'title': `-${late_points} Points`});
+      deductions -= late_points;
+    }
+
+    if (process.env.COMPILE_STATUS !== 'success') {
+      const amount = 5;
+      core.warning(`Found 1 or more compiler warning(s).`, {'title': `-${amount} Points`});
+      deductions -= amount;
+    }
+
+    if (process.env.JAVADOC_STATUS !== 'success') {
+      const amount = 5;
+      core.warning(`Found 1 or more Javadoc warning(s).`, {'title': `-${amount} Points`});
+      deductions -= amount;
+    }
+
+    if (process.env.COMMITS_STATUS !== 'success') {
+      const amount = 5;
+      const num_commits = parseInt(process.env.NUM_COMMITS);
+      const min_commits = parseInt(process.env.MIN_COMMITS);
+      core.warning(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': `-${amount} Points`});
+      deductions -= amount;
+    }
 
     core.setOutput('deductions', deductions);
     core.info(`Total deductions: ${deductions}`);
@@ -64,8 +81,8 @@ module.exports = async ({github, context, core}) => {
             start_line: 1,
             end_line: 1,
             annotation_level: 'notice',
-            message: 'Points 3/4',
-            title: `Testing`,
+            message: final_grade,
+            title: `Autograding complete`,
           },
         ],
       },

@@ -29,7 +29,6 @@ module.exports = async ({core, exec}) => {
       await exec.exec('mvn', args);
     }
     catch (error) {
-      core.error(`Found 1 or more ${types.join(' and ')} warning(s).`, {'title': '-5 Points'});
       process.exitCode = 1;
     }
   }

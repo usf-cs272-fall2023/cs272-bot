@@ -2,6 +2,10 @@ name: Homework Grade
 description: Calculate homework grade with deductions and late penalties
 
 inputs:
+  grade_results:
+    required: false
+    type: string
+
   compile_status:
     required: false
     type: string
@@ -14,7 +18,11 @@ inputs:
     required: false
     type: string
 
-  grade_results:
+  num_commits:
+    required: false
+    type: string
+  
+  min_commits:
     required: false
     type: string
 
@@ -25,10 +33,12 @@ runs:
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
+        GRADE_RESULTS: ${{ inputs.grade_results }}
         COMPILE_STATUS: ${{ inputs.compile_status }}
         JAVADOC_STATUS: ${{ inputs.javadoc_status }}
         COMMITS_STATUS: ${{ inputs.commits_status }}
-        GRADE_RESULTS: ${{ inputs.grade_results }}
+        NUM_COMMITS: ${{ inputs.num_commits }}
+        MIN_COMMITS: ${{ inputs.min_commits }}
 
       with:
         script: |

@@ -19,12 +19,11 @@ module.exports = async ({core, exec}) => {
     core.info(result);
     core.endGroup();
 
-    if (num_commits < min_commits) {
-      core.error(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': '-5 Points'});
-      process.exitCode = 1;
-    }
-    
     core.info(`Found at least ${num_commits} commits.`);
+    core.setOutput('num_commits', num_commits);
+    core.setOutput('min_commits', min_commits);
+
+    process.exitCode = num_commits < min_commits ? 1 : 0;
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
