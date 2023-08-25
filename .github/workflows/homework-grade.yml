@@ -2,6 +2,10 @@ name: Homework Grade
 
 on:
   workflow_call:
+    inputs:
+      points:
+        required: false
+        type: string
 
 permissions:
   checks: write
@@ -32,8 +36,10 @@ jobs:
     steps:
       - name: Hello
         shell: bash
+        env:
+          POINTS: ${{ inputs.points }}
         run: |
-          echo "Hello world"
+          echo "Hello world ${POINTS}"
 
       # - name: Setup homework environment
       #   id: homework_setup
