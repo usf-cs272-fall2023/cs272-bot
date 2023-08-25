@@ -30,11 +30,53 @@ module.exports = async ({github, context, core}) => {
     }
 
     const final_points = grade_points;
+    const final_grade = `Points ${final_points}/${process.env.GRADE_POSSIBLE}`;
     core.setOutput('final_points', final_points);
 
     core.info(final_points);
 
-    // trick github classroom into using this new value
+    // // trick github classroom into using this new value
+    // const workflow_run = await github.rest.actions.getWorkflowRun({
+    //   owner: context.repo.owner,
+    //   repo: context.repo.repo,
+    //   run_id: context.runId
+    // });
+
+    // const suite_url = workflow_run.data.check_suite_url;
+    // const suite_id = parseInt(suite_url.match(/[0-9]+$/)[0], 10);
+    
+    // const check_runs = await github.rest.checks.listForSuite({
+    //   owner: context.repo.owner,
+    //   repo: context.repo.repo,
+    //   check_name: 'Autograding',
+    //   check_suite_id: suite_id,
+    // });
+  
+    // let text = process.env.POINTS;
+    // text = 'Points 10/5';
+    
+    // await github.rest.checks.update({
+    //   owner: context.repo.owner,
+    //   repo: context.repo.repo,
+    //   check_run_id: check_runs.data.check_runs[0].id,
+    //   output: {
+    //     title: 'Autograding',
+    //     summary: text,
+    //     text: text,
+    //     annotations: [
+    //       {
+    //         path: '.github',
+    //         start_line: 1,
+    //         end_line: 1,
+    //         annotation_level: 'notice',
+    //         message: text,
+    //         title: 'Autograding complete',
+    //       },
+    //     ],
+    //   },
+    // });
+
+
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
