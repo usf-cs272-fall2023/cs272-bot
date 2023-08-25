@@ -4,10 +4,26 @@ description: 'Checks that a minimum number of commits have been made'
 runs:
   using: 'composite'
   steps:
-    - id: main
+    - id: fetch_commits
+      shell: bash
+      run: |
+        echo "Listing commits..."
+        git fetch --unshallow
+        git log --oneline refs/remotes/origin/main
+        
+        NUM_COMMITS=$(git rev-list --count refs/remotes/origin/main)
+        echo "NUM_COMMITS=${NUM_COMMITS}" >> $GITHUB_ENV
+        echo "num_commits=${NUM_COMMITS}" >> $GITHUB_OUTPUT
+
+        echo ""
+        echo "Found Commits: ${NUM_COMMITS} (at least)"
+
+    - id: check_commits
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
+        NUM_COMMITS: ${{ steps.fetch_commits.num_commits }}
+        MIN_COMMITS: 3
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);

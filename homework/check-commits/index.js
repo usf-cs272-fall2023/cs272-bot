@@ -1,8 +1,11 @@
 module.exports = async ({github, context, core, exec}) => {
   try {
-    // list recent commits
-    core.info('Listing commits...');
-    await exec.exec('git', ['fetch', '--unshallow']);
+    const min_commits = parseInt(process.env.MIN_COMMITS);
+    const num_commits = parseInt(process.env.NUM_COMMITS);
+
+    // if (num_commits == min_commits) {
+      core.setFailed(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required (-5 points).`);
+    // }
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
