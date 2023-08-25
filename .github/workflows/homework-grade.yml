@@ -99,33 +99,9 @@ jobs:
               },
             });
 
+  # core.notice(`Earned ${starting_points} from tests`, {'title': `+${starting_points} Points`})
 
-  # grade:
-  #   name: Autograding # need a check named "Autograding"
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
-  #   needs: test
-  #   if: ${{ !cancelled() && (needs.test.outputs.autograder == 'success' || needs.test.outputs.autograder == 'failure') }}
 
-  #   steps:
-  #     - name: Output autograder results
-  #       uses: actions/github-script@v6
-  #       with:
-  #         script: |
-  #           const outputs = ${{ toJSON(needs.test.outputs) }};
-
-  #           for (const property in outputs) {
-  #             core.info(`${property}: ${outputs[property]}`);
-  #             core.setOutput(property, outputs[property]);
-  #           }
-        
-  #     - name: Calculate non-late deductions
-  #       uses: usf-cs272-fall2023/cs272-bot/actions/homework-deductions@main
-  #       id: calc_other_deductions
-  #       with:
-  #         compile_status: ${{ needs.test.outputs.compile_status }}
-  #         javadoc_status: ${{ needs.test.outputs.javadoc_status }}
-  #         commits_status: ${{ needs.test.outputs.commits_status }}
 
   #     # trick github classroom by creating an annotation just right
   #     # https://github.com/education/autograding/blob/master/src/output.ts
@@ -175,21 +151,3 @@ jobs:
   #               ],
   #             },
   #           });
-
-      # try {
-      #   const points = process.env.POINTS;
-      #   const matches = Array.from(points.matchAll(/\d+/g));
-      #   console.log(matches);
-
-      #   const earned = parseInt(matches[0][0]);
-      #   const possible = parseInt(matches[1][0]);
-
-      #   core.info(earned);
-      #   core.info(possible);
-      # }
-      # catch (error) {
-      #   core.setFailed(`Unable to calculate non-late deductions.`);
-      # }
-
-
-      # TODO: Add checking commits, warnings, deadline to grade job, add badge

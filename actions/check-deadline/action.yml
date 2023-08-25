@@ -65,6 +65,9 @@ runs:
     - shell: bash
       run: npm install luxon
 
+    - shell: bash
+      run: npm install fs
+
     - id: check_commits
       uses: actions/github-script@v6
       env:
@@ -76,6 +79,8 @@ runs:
         # using separate file for better syntax highlighting
         script: |
           const { DateTime, Settings } = require('luxon');
+          const fs = require('fs');
+          const artifact = require('@actions/artifact');
           const constants = require(`${process.env.ACTION_PATH}/constants.js`);
           const script = require(`${process.env.ACTION_PATH}/index.js`);
           return await script({github, context, core, constants, DateTime, Settings});
