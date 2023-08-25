@@ -14,9 +14,9 @@ inputs:
     required: false
     type: string
 
-  grade_results:
-    required: false
-    type: string
+  # grade_results:
+  #   required: false
+  #   type: string
 
   # grade_starting:
   #   required: false
@@ -48,7 +48,7 @@ runs:
         COMPILE_STATUS: "${{ inputs.compile_status }}"
         JAVADOC_STATUS: "${{ inputs.javadoc_status }}"
         COMMITS_STATUS: "${{ inputs.commits_status }}"
-        GRADE_RESULTS: "{{ inputs.grade_results }}"
+        # GRADE_RESULTS: "{{ inputs.grade_results }}"
         # GRADE_STARTING: "${{ inputs.grade_starting }}"
         # GRADE_POSSIBLE: "${{ inputs.grade_possible }}"
         # GRADE_POINTS: "${{ inputs.grade_points }}"

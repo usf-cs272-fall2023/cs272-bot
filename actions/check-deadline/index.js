@@ -164,8 +164,6 @@ module.exports = async ({github, context, core, constants, DateTime, Settings, f
       core.setOutput(property, output[property]);
     }
     core.endGroup();
-
-    return JSON.stringify(output);
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
