@@ -1,10 +1,11 @@
-module.exports = async ({github, context, core, exec}) => {
+module.exports = async ({core}) => {
   try {
     const min_commits = parseInt(process.env.MIN_COMMITS);
     const num_commits = parseInt(process.env.NUM_COMMITS);
 
-    // if (num_commits == min_commits) {
-      core.setFailed(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': '-5 Points'});
+    // if (num_commits < min_commits) {
+      core.error(`Found only ${num_commits} commit(s)... at least ${min_commits} commits are required.`, {'title': '-5 Points'});
+      process.exitCode = 1;
     // }
   }
   catch(error) {
