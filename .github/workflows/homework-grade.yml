@@ -45,9 +45,15 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
-          stoptoken=$(uuidgen)
-          echo "::stop-commands::${stoptoken}"
           mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
+
+          if [ $? -ne 0 ];
+          then
+            stoptoken=$(uuidgen)
+            echo "::stop-commands::${stoptoken}"
+            echo "::error::Found 1 or more compile warnings."
+            echo "::${stoptoken}::"
+          fi
 
       # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
