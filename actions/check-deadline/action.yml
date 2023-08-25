@@ -68,6 +68,9 @@ runs:
     - shell: bash
       run: npm install fs
 
+    - shell: bash
+      run: npm install @actions/artifact
+
     - id: check_commits
       uses: actions/github-script@v6
       env:
