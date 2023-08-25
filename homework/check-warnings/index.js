@@ -30,7 +30,7 @@ module.exports = async ({core, exec}) => {
     }
     catch (error) {
       core.error(`Found 1 or more ${types.join(' and ')} warnings.`);
-      process.exitCode = result;
+      process.exitCode = 1;
     }
   }
   catch(error) {
