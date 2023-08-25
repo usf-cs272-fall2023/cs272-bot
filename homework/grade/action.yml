@@ -26,6 +26,15 @@ inputs:
     required: false
     type: string
 
+outputs:
+  deductions:
+    description: 'Total number of deductions (including late penalty)'
+    value: ${{ steps.grade_homework.outputs.deductions }}
+
+  final_points:
+    description: 'Total number of points after deductions'
+    value: ${{ steps.grade_homework.outputs.final_points }}
+
 runs:
   using: 'composite'
   steps:
