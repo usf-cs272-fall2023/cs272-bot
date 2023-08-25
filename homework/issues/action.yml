@@ -1,0 +1,13 @@
+name: 'Late Homework'
+description: 'Handle late homework grade issues'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/github-script@v6
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      with:
+        script: |
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
+          return await script({github, context, core});

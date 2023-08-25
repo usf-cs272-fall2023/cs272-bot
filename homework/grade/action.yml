@@ -2,7 +2,7 @@ name: Homework Grade
 description: Calculate homework grade with deductions and late penalties
 
 inputs:
-  grade_starting:
+  grade_output:
     required: false
     type: string
 
