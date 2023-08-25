@@ -30,9 +30,9 @@ module.exports = async ({github, context, core, constants, DateTime, Settings}) 
   let submitted_date = undefined;
 
   try {
-    if ('inputs' in github.context.payload && github.context.payload.inputs.submitted_date) {
-      console.log(`     Input: ${github.context.payload.inputs.submitted_date}`);
-      submitted_date = DateTime.fromISO(github.context.payload.inputs.submitted_date);
+    if ('inputs' in context.payload && context.payload.inputs.submitted_date) {
+      console.log(`     Input: ${context.payload.inputs.submitted_date}`);
+      submitted_date = DateTime.fromISO(context.payload.inputs.submitted_date);
     }
     else if (`SUBMITTED_DATE` in process.env && process.env.SUBMITTED_DATE) {
       console.log(`     Input: ${process.env.SUBMITTED_DATE}`);
@@ -40,27 +40,24 @@ module.exports = async ({github, context, core, constants, DateTime, Settings}) 
     }
     else {
       // try to use event payload for submitted date
-      switch (github.context.eventName) {
+      switch (context.eventName) {
         case 'push':
           // pushed_at is a timestamp for this event
-          console.log(`    Pushed: ${github.context.payload.repository.pushed_at}`);
-          submitted_date = DateTime.fromSeconds(parseInt(github.context.payload.repository.pushed_at));
-          // committed date less reliable, use pushed date instead!
-          // console.log(`    Commit: ${github.context.payload.head_commit.message}`);
-          // submitted_date = DateTime.fromISO(github.context.payload.head_commit.timestamp);
+          console.log(`    Pushed: ${context.payload.repository.pushed_at}`);
+          submitted_date = DateTime.fromSeconds(parseInt(context.payload.repository.pushed_at));
           break;
         case 'release':
           // created_at is an ISO date for this event
-          console.log(`   Release: ${github.context.payload.release.tag_name}`);
-          submitted_date = DateTime.fromISO(github.context.payload.release.created_at);
+          console.log(`   Release: ${context.payload.release.tag_name}`);
+          submitted_date = DateTime.fromISO(context.payload.release.created_at);
           break;
         case 'workflow_dispatch':
           // pushed_at is an ISO date for this event
-          console.log(`    Pushed: ${github.context.payload.repository.pushed_at}`);
-          submitted_date = DateTime.fromISO(github.context.payload.repository.pushed_at);
+          console.log(`    Pushed: ${context.payload.repository.pushed_at}`);
+          submitted_date = DateTime.fromISO(context.payload.repository.pushed_at);
           break;
         default:
-          throw new Error(`Unexpected event type: ${github.context.eventName}`);
+          throw new Error(`Unexpected event type: ${context.eventName}`);
       }
     }
 
@@ -73,7 +70,7 @@ module.exports = async ({github, context, core, constants, DateTime, Settings}) 
     core.warning(`Unable to determine submitted date; using current date and time. ${error}`);
 
     core.startGroup('Outputting context...');
-    console.log(JSON.stringify(github.context));
+    console.log(JSON.stringify(context));
     core.endGroup();
     console.log('');
 
