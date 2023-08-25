@@ -1,8 +1,12 @@
 module.exports = async ({github, context, core}) => {
   try {
-    const grade_starting = core.getInput('grade_starting');
-    core.info(grade_starting);
+    // const grade_starting = core.getInput('grade_starting');
+    core.info(process.env.INPUTS);
+
+    // output points earned from tests before handle deductions
     // core.notice(`Earned ${grade_starting} from tests before any deductions`, {'title': `+${grade_starting} Points`});
+
+
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
