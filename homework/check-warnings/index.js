@@ -25,9 +25,10 @@ module.exports = async ({core, exec}) => {
       'clean', 'compile'
     ];
 
-    const result = await exec.exec('mvn', args);
-    
-    if (result !== 0) {
+    try {
+      await exec.exec('mvn', args);
+    }
+    catch (error) {
       core.error(`Found 1 or more ${types.join(' and ')} warnings.`);
       process.exitCode = result;
     }
