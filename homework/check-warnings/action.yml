@@ -1,8 +1,8 @@
-name: 'Pending'
-description: 'Pending'
+name: 'Check Warnings'
+description: 'Checks for compile and Javadoc warnings'
 
 inputs:
-  compiler:
+  compile:
     description: 'Enable checking compiler warnings'
     required: false
     default: 'true'
@@ -13,8 +13,19 @@ inputs:
     default: 'true'
 
 runs:
+  # use composite and github-script instead of javascript so that 
+  # do not have to maintain the node modules post-semester
+
   using: 'composite'
   steps:
-    - shell: bash
-      run: |
-        echo "Hello world"
+    - id: check_warnings
+      uses: actions/github-script@v6
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        COMPILE: ${{ inputs.compile }}
+        JAVADOC: ${{ inputs.javadoc }}
+      with:
+        # using separate file for better syntax highlighting
+        script: |
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
+          return await script({core, exec});

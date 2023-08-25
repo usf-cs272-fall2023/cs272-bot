@@ -27,6 +27,6 @@ module.exports = async ({core, exec}) => {
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
-    core.setFailed('Unable to check the number of commits.', {'title': 'Error'});
+    core.setFailed('Unable to check the number of commits.');
   }
 };
