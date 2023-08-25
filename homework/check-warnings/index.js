@@ -29,7 +29,7 @@ module.exports = async ({core, exec}) => {
       await exec.exec('mvn', args);
     }
     catch (error) {
-      core.error(`Found 1 or more ${types.join(' and ')} warnings.`);
+      core.error(`Found 1 or more ${types.join(' and ')} warning(s).`);
       process.exitCode = 1;
     }
   }
