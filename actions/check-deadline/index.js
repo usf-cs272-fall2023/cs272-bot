@@ -146,13 +146,6 @@ module.exports = async ({github, context, core, constants, DateTime, Settings, f
       'workflow_run': `${context.runId}`
     };
 
-    core.startGroup('Setting output...');
-    for (const property in output) {
-      console.log(`${property}: ${output[property]}`);
-      core.setOutput(property, output[property]);
-    }
-    core.endGroup();
-
     core.startGroup('Uploading artifact...');
     const filename = 'check-deadline-results.json';
     fs.writeFileSync(filename, JSON.stringify(output));
@@ -163,7 +156,14 @@ module.exports = async ({github, context, core, constants, DateTime, Settings, f
   
     output.results_json = filename;
     output.results_name = response.artifactName;
-    core.endGroup();    
+    core.endGroup();
+
+    core.startGroup('Setting output...');
+    for (const property in output) {
+      console.log(`${property}: ${output[property]}`);
+      core.setOutput(property, output[property]);
+    }
+    core.endGroup();
   }
   catch(error) {
     core.info(`${error.name}: ${error.message}`);
