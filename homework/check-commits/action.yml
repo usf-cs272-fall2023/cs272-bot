@@ -7,3 +7,4 @@ runs:
     - shell: bash
       run: |
         echo "Hello world"
+        exit 1
