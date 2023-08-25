@@ -4,49 +4,74 @@ description: 'Check assignment deadline and calculate late grade'
 inputs:
   assignment_name:
     description: 'Assignment name'
-    required: true
+    required: false
+
   starting_points:
     description: 'Earned points before late penalties'
     default: '100'
-    required: true
+    required: false
+
   submitted_date:
     description: 'Date submitted (ISO format)'
     required: false
-  extension_hours:
-    description: 'Amount of extension granted (in hours)'
-    default: '0'
-    required: false
 
-outputs:
-  assignment_name:
-    description: 'Name of assignment'
-  submitted_iso:
-    description: 'Submitted (in ISO format)'
-  submitted_text:
-    description: 'Submitted (in readable text)'
-  deadline_iso:
-    description: 'Deadline (in ISO format)'
-  deadline_text:
-    description: 'Deadline (in readable text)'
-  late_interval:
-    description: 'Late interval (in hours, 0 if not late)'
-  late_multiplier:
-    description: 'Late penalty multiplier'
-  late_percent:
-    description: 'Late penalty (in percent)'
-  late_points:
-    description: 'Late penalty (in points)'
-  grade_starting:
-    description: 'Earned points before late penalties'
-  grade_possible:
-    description: 'Total points possible'
-  grade_points:
-    description: 'Late grade (in points)'
-  grade_percent:
-    description: 'Late grade (in percent)'
-  results_name:
-    description: 'Name of results artifact'
-  results_json:
-    description: 'Name of results JSON file'
-  workflow_run:
-    description: 'Workflow run that generated these results'
+# outputs:
+#   assignment_name:
+#     description: 'Name of assignment'
+
+#   submitted_iso:
+#     description: 'Submitted (in ISO format)'
+#   submitted_text:
+#     description: 'Submitted (in readable text)'
+
+#   deadline_iso:
+#     description: 'Deadline (in ISO format)'
+#   deadline_text:
+#     description: 'Deadline (in readable text)'
+
+#   late_interval:
+#     description: 'Late interval (in hours, 0 if not late)'
+#   late_multiplier:
+#     description: 'Late penalty multiplier'
+
+#   late_percent:
+#     description: 'Late penalty (in percent)'
+#   late_points:
+#     description: 'Late penalty (in points)'
+
+#   grade_starting:
+#     description: 'Earned points before late penalties'
+#   grade_possible:
+#     description: 'Total points possible'
+#   grade_points:
+#     description: 'Late grade (in points)'
+#   grade_percent:
+#     description: 'Late grade (in percent)'
+
+#   results_name:
+#     description: 'Name of results artifact'
+#   results_json:
+#     description: 'Name of results JSON file'
+
+#   workflow_run:
+#     description: 'Workflow run that generated these results'
+
+runs:
+  # use composite and github-script instead of javascript so that 
+  # do not have to maintain the node modules post-semester
+
+  using: 'composite'
+  steps:
+    - id: check_commits
+      uses: actions/github-script@v6
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        ASSIGNMENT_NAME: ${{ inputs.assignment_name }}
+        STARTING_POINTS: ${{ inputs.starting_points }}
+        SUBMITTED_DATE: ${{ inputs.submitted_date }}
+      with:
+        # using separate file for better syntax highlighting
+        script: |
+          const constants = require(`${process.env.ACTION_PATH}/constants.js`);
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
+          return await script({core, exec});
