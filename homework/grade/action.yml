@@ -14,29 +14,9 @@ inputs:
     required: false
     type: string
 
-  # grade_results:
-  #   required: false
-  #   type: string
-
-  # grade_starting:
-  #   required: false
-  #   type: string
-
-  # grade_possible:
-  #   required: false
-  #   type: string
-
-  # grade_points:
-  #   required: false
-  #   type: string
-
-  # late_points:
-  #   required: false
-  #   type: string
-
-  # late_multiplier:
-  #   required: false
-  #   type: string
+  grade_results:
+    required: false
+    type: string
 
 runs:
   using: 'composite'
@@ -48,12 +28,7 @@ runs:
         COMPILE_STATUS: "${{ inputs.compile_status }}"
         JAVADOC_STATUS: "${{ inputs.javadoc_status }}"
         COMMITS_STATUS: "${{ inputs.commits_status }}"
-        # GRADE_RESULTS: "{{ inputs.grade_results }}"
-        # GRADE_STARTING: "${{ inputs.grade_starting }}"
-        # GRADE_POSSIBLE: "${{ inputs.grade_possible }}"
-        # GRADE_POINTS: "${{ inputs.grade_points }}"
-        # LATE_POINTS: "${{ inputs.late_points }}"
-        # LATE_MULTIPLIER: "${{ inputs.late_multiplier }}"
+        GRADE_RESULTS: "{{ inputs.grade_results }}"
 
       with:
         script: |
