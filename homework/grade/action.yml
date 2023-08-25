@@ -2,7 +2,7 @@ name: Homework Grade
 description: Calculate homework grade with deductions and late penalties
 
 inputs:
-  grade_output:
+  grade_starting:
     required: false
     type: string
 
@@ -25,10 +25,6 @@ runs:
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
-        COMPILE_STATUS: ${{ inputs.compile_status }}
-        JAVADOC_STATUS: ${{ inputs.javadoc_status }}
-        COMMITS_STATUS: ${{ inputs.commits_status }}
-        GRADE_OUTPUT: ${{ fromJSON(inputs.grade_output) }}
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);
