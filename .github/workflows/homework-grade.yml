@@ -99,39 +99,6 @@ jobs:
               },
             });
 
-      # - name: Setup homework environment
-      #   id: homework_setup
-      #   uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
-
-      # - name: Run tests and autograder
-      #   id: autograder
-      #   uses: education/autograding@v1
-
-  #     # must be after autograder to avoid compile issues
-  #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
-  #     - name: Check for compile warnings
-  #       id: check_compile
-  #       if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
-  #       shell: bash
-  #       run: |
-  #         if ! mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile;
-  #         then
-  #           echo "::error::Found 1 or more compile warnings (-5 points)."
-  #         fi
-
-  #     # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
-
-  #     # must be after autograder to avoid compile issues
-  #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
-  #     - name: Check for Javadoc warnings
-  #       id: check_javadoc
-  #       if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
-  #       shell: bash
-  #       run: |
-  #         if ! mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
-  #         then
-  #           echo "::error::Found 1 or more compile warnings (-5 points)."
-  #         fi
 
   # grade:
   #   name: Autograding # need a check named "Autograding"
