@@ -1,10 +1,14 @@
-name: 'Pending'
-description: 'Pending'
+name: 'Check Commits'
+description: 'Checks that a minimum number of commits have been made'
 
 runs:
   using: 'composite'
   steps:
-    - shell: bash
-      run: |
-        echo "Hello world"
-        exit 0
+    - id: main
+      uses: actions/github-script@v6
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      with:
+        script: |
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
+          return await script({github, context, core, exec});
