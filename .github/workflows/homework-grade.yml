@@ -45,7 +45,8 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
-          echo "::stop-commands::#SUPPRESS_ERROR_ANNOTATIONS#"
+          stoptoken=$(uuidgen)
+          echo "::stop-commands::${stoptoken}"
           mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
 
       # mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:all,-path,-processing" "-Dconfig.xdoclint=-Xdoclint:none" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
@@ -57,6 +58,8 @@ jobs:
         if: ${{ !cancelled() && (steps.autograder.outcome == 'success' || steps.autograder.outcome == 'failure') }}
         shell: bash
         run: |
+          stoptoken=$(uuidgen)
+          echo "::stop-commands::${stoptoken}"
           mvn -f pom.xml -ntp "-Dconfig.xlint=-Xlint:none" "-Dconfig.xdoclint=-Xdoclint:all/private" "-Dconfig.werror=true" "-Dmaven.compiler.showWarnings=true" clean compile
           exit 1
 
@@ -84,6 +87,10 @@ jobs:
           if [[ ${NUM_COMMITS} -ge ${MIN_COMMITS} ]]; then
             exit 0
           fi
+
+          stoptoken=$(uuidgen)
+          echo "::stop-commands::${stoptoken}"
+          exit 1
 
   grade:
     name: Autograding # need a check named "Autograding"
