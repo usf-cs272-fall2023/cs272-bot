@@ -1,0 +1,9 @@
+name: 'Pending'
+description: 'Pending'
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        echo "Hello world"

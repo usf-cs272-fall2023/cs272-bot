@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Autograding
+  grade:
+    name: Grade
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -19,10 +19,10 @@ jobs:
     #   actions: read
     #   contents: read
 
-    outputs:
+    # outputs:
       # homework_name: ${{ steps.homework_setup.outputs.homework_name }}
 
-      points: ${{ steps.autograder.outputs.points }}
+      # points: ${{ steps.autograder.outputs.points }}
       # autograder: ${{ steps.autograder.outcome }}
 
       # compile_status: ${{ steps.check_compile.outcome }}
@@ -30,13 +30,18 @@ jobs:
       # commits_status: ${{ steps.check_commits.outcome }}
 
     steps:
-      - name: Setup homework environment
-        id: homework_setup
-        uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
+      - name: Hello
+        shell: bash
+        run: |
+          echo "Hello world"
 
-      - name: Run tests and autograder
-        id: autograder
-        uses: education/autograding@v1
+      # - name: Setup homework environment
+      #   id: homework_setup
+      #   uses: usf-cs272-fall2023/cs272-bot/actions/homework-setup@main
+
+      # - name: Run tests and autograder
+      #   id: autograder
+      #   uses: education/autograding@v1
 
   #     # must be after autograder to avoid compile issues
   #     # run this step even if the autograder failed (but not if it was skipped or cancelled)
