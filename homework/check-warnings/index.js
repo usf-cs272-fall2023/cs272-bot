@@ -1,25 +1,22 @@
 module.exports = async ({core, exec}) => {
   try {
-    let xlint = 'none';
-    let xdoclint = 'none';
-    let types = [];
+    let xlint = '';
+    let xdoclint = '';
 
     if (`${process.env.COMPILE}`.toLowerCase() === 'true') {
-      xlint = 'all,-path,-processing';
-      xlint = 'all';
-      types.push('compiler');
+      xlint = '-Xlint:all,-path,-processing';
+      xlint = '-Xlint:all';
     }
 
     if (`${process.env.JAVADOC}`.toLowerCase() === 'true') {
-      xdoclint = 'all/private';
-      types.push('javadoc');
+      xdoclint = '-Xdoclint:all/private';
     }
 
     // -D flags based on pom.xml properties
     const args = [
       '-f', 'pom.xml', '-ntp', 
-      // `"-Dconfig.xlint=-Xlint:${xlint}"`,
-      // `"-Dconfig.xdoclint=-Xdoclint:${xdoclint}"`, 
+      `"-Dconfig.xlint=${xlint}"`,
+      `"-Dconfig.xdoclint=${xdoclint}"`, 
       `"-Dconfig.werror=true"`,
       `"-Dmaven.compiler.showWarnings=true"`,
       'clean', 'compile'
