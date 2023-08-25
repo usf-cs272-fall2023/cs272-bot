@@ -14,20 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    permissions:
-      checks: read
-      actions: read
-      contents: read
+    # permissions:
+    #   checks: read
+    #   actions: read
+    #   contents: read
 
     outputs:
-      homework_name: ${{ steps.homework_setup.outputs.homework_name }}
+      # homework_name: ${{ steps.homework_setup.outputs.homework_name }}
 
       points: ${{ steps.autograder.outputs.points }}
-      autograder: ${{ steps.autograder.outcome }}
+      # autograder: ${{ steps.autograder.outcome }}
 
-      compile_status: ${{ steps.check_compile.outcome }}
-      javadoc_status: ${{ steps.check_javadoc.outcome }}
-      commits_status: ${{ steps.check_commits.outcome }}
+      # compile_status: ${{ steps.check_compile.outcome }}
+      # javadoc_status: ${{ steps.check_javadoc.outcome }}
+      # commits_status: ${{ steps.check_commits.outcome }}
 
     steps:
       - name: Setup homework environment
