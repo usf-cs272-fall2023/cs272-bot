@@ -2,39 +2,34 @@ name: Homework Grade
 description: Calculate homework grade with deductions and late penalties
 
 inputs:
-  # assignment_name:
-  #   required: false
-  #   type: string
-
-  grade_starting:
+  grade_output:
     required: false
     type: string
 
-  # grade_possible:
-  #   required: false
-  #   type: string
+  compile_status:
+    required: false
+    type: string
 
-  # compile_status:
-  #   required: false
-  #   type: string
+  javadoc_status:
+    required: false
+    type: string
 
-  # javadoc_status:
-  #   required: false
-  #   type: string
-
-  # commits_status:
-  #   required: false
-  #   type: string
+  commits_status:
+    required: false
+    type: string
 
 runs:
   using: 'composite'
   steps:
-    - uses: actions/github-script@v6
+    - id: grade_homework
+      uses: actions/github-script@v6
       env:
-        GRADE_STARTING: '${{ inputs.grade_starting }}'
+        ACTION_PATH: ${{ github.action_path }}
+        COMPILE_STATUS: ${{ inputs.compile_status }}
+        JAVADOC_STATUS: ${{ inputs.javadoc_status }}
+        COMMITS_STATUS: ${{ inputs.commits_status }}
+        GRADE_OUTPUT: ${{ toJSON(inputs.grade_output) }}
       with:
         script: |
-          const grade_starting = process.env.GRADE_STARTING;
-          core.notice(`Earned ${grade_starting} from tests before any deductions`, {'title': `+${grade_starting} Points`});
-
-
+          const script = require(`${process.env.ACTION_PATH}/index.js`);
+          return await script({github, context, core});
