@@ -5,7 +5,6 @@ module.exports = async ({core, exec}) => {
 
     if (`${process.env.COMPILE}`.toLowerCase() === 'true') {
       xlint = '-Xlint:all,-path,-processing';
-      xlint = '-Xlint:all';
     }
 
     if (`${process.env.JAVADOC}`.toLowerCase() === 'true') {
