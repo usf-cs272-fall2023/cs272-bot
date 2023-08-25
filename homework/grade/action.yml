@@ -28,7 +28,7 @@ runs:
         COMPILE_STATUS: ${{ inputs.compile_status }}
         JAVADOC_STATUS: ${{ inputs.javadoc_status }}
         COMMITS_STATUS: ${{ inputs.commits_status }}
-        GRADE_OUTPUT: ${{ toJSON(inputs.grade_output) }}
+        GRADE_OUTPUT: ${{ inputs.grade_output }}
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/index.js`);
