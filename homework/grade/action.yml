@@ -24,11 +24,11 @@ runs:
     - id: grade_homework
       uses: actions/github-script@v6
       env:
-        ACTION_PATH: "${{ github.action_path }}"
-        COMPILE_STATUS: "${{ inputs.compile_status }}"
-        JAVADOC_STATUS: "${{ inputs.javadoc_status }}"
-        COMMITS_STATUS: "${{ inputs.commits_status }}"
-        GRADE_RESULTS: "{{ inputs.grade_results }}"
+        ACTION_PATH: ${{ github.action_path }}
+        COMPILE_STATUS: ${{ inputs.compile_status }}
+        JAVADOC_STATUS: ${{ inputs.javadoc_status }}
+        COMMITS_STATUS: ${{ inputs.commits_status }}
+        GRADE_RESULTS: ${{ inputs.grade_results }}
 
       with:
         script: |
