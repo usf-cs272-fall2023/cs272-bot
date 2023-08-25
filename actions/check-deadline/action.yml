@@ -18,43 +18,67 @@ inputs:
 outputs:
   assignment_name:
     description: 'Name of assignment'
+    value: ${{ steps.check_commits.outputs.assignment_name }}
 
   submitted_iso:
     description: 'Submitted (in ISO format)'
+    value: ${{ steps.check_commits.outputs.submitted_iso }}
+
   submitted_text:
     description: 'Submitted (in readable text)'
+    value: ${{ steps.check_commits.outputs.submitted_text }}
 
   deadline_iso:
     description: 'Deadline (in ISO format)'
+    value: ${{ steps.check_commits.outputs.deadline_iso }}
+
   deadline_text:
     description: 'Deadline (in readable text)'
+    value: ${{ steps.check_commits.outputs.deadline_text }}
 
   late_interval:
     description: 'Late interval (in hours, 0 if not late)'
+    value: ${{ steps.check_commits.outputs.late_interval }}
+
   late_multiplier:
     description: 'Late penalty multiplier'
+    value: ${{ steps.check_commits.outputs.late_multiplier }}
 
   late_percent:
     description: 'Late penalty (in percent)'
+    value: ${{ steps.check_commits.outputs.late_percent }}
+
   late_points:
     description: 'Late penalty (in points)'
+    value: ${{ steps.check_commits.outputs.late_points }}
 
   grade_starting:
     description: 'Earned points before late penalties'
+    value: ${{ steps.check_commits.outputs.grade_starting }}
+
   grade_possible:
     description: 'Total points possible'
+    value: ${{ steps.check_commits.outputs.grade_possible }}
+
   grade_points:
     description: 'Late grade (in points)'
+    value: ${{ steps.check_commits.outputs.grade_points }}
+
   grade_percent:
     description: 'Late grade (in percent)'
+    value: ${{ steps.check_commits.outputs.grade_percent }}
 
   results_name:
     description: 'Name of results artifact'
+    value: ${{ steps.check_commits.outputs.results_name }}
+
   results_json:
     description: 'Name of results JSON file'
+    value: ${{ steps.check_commits.outputs.results_json }}
 
   workflow_run:
     description: 'Workflow run that generated these results'
+    value: ${{ steps.check_commits.outputs.workflow_run }}
 
 runs:
   # use composite and github-script instead of javascript so that 

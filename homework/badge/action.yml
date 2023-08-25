@@ -1,0 +1,67 @@
+name: 'Create Homework Badge'
+description: 'Create homework badge for Github Classroom autograder'
+
+inputs:
+  outcome:
+    description: 'Outcome from the autograder'
+    required: true
+
+  points:
+    description: 'Points from the autograder'
+    required: true
+
+# make points badge for readme
+# https://github.com/markpatterson27/points-bar
+# https://education.github.community/t/autograder-score-on-readme/66289/2
+# https://github.com/emibcn/badge-action/tree/master#commit-the-changes-to-dedicated-branch
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout Homework Repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Setup Badges Branch
+      id: results
+      shell: bash
+      run: |
+        outcome="${{ inputs.outcome }}"
+        color="f85149"
+
+        if [[ $outcome == "success" ]]; then
+          color="2ea043"
+        fi
+
+        echo "color=$color" >> $GITHUB_OUTPUT
+
+        if [[ "${{ inputs.points }}" =~ ([0-9]+)\/[0-9]+ ]]; then
+          echo "earned_points=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+        else
+          echo "earned_points=0" >> $GITHUB_OUTPUT
+        fi
+
+        git checkout badges || git checkout -b badges
+        git rm --cached $(git ls-files)
+
+        echo "# Badges branch" > README.md
+        echo "![Points](points.svg)" >> README.md
+
+    - name: Generate Points Badge
+      uses: emibcn/badge-action@v2.0.2
+      with:
+        label: 'Points'
+        status: '${{ inputs.points }}'
+        color: '${{ steps.results.outputs.color }}'
+        path: 'points.svg'
+
+    - name: Push Points Badge
+      shell: bash
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add points.svg
+        git add README.md
+        git commit --allow-empty -m "Updated points badge"
+        git push origin badges --force
