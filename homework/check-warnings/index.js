@@ -4,18 +4,18 @@ module.exports = async ({core, exec}) => {
     let xdoclint = '';
 
     if (`${process.env.COMPILE}`.toLowerCase() === 'true') {
-      xlint = '-Dconfig.xlint=-Xlint:all,-path,-processing';
+      xlint = '"-Dconfig.xlint=-Xlint:all,-path,-processing"';
     }
 
     if (`${process.env.JAVADOC}`.toLowerCase() === 'true') {
-      xdoclint = '-Dconfig.xdoclint=-Xdoclint:all/private';
+      xdoclint = '"-Dconfig.xdoclint=-Xdoclint:all/private"';
     }
 
     // -D flags based on pom.xml properties
     const args = [
       '-f', 'pom.xml', '-ntp', 
-      `"${xlint}"`,
-      `"${xdoclint}"`, 
+      `${xlint}`,
+      `${xdoclint}`, 
       `"-Dconfig.werror=true"`,
       `"-Dmaven.compiler.showWarnings=true"`,
       'clean', 'compile'
@@ -25,6 +25,7 @@ module.exports = async ({core, exec}) => {
       await exec.exec('mvn', args);
     }
     catch (error) {
+      core.info(`${error.name}: ${error.message}`);
       process.exitCode = 1;
     }
   }
