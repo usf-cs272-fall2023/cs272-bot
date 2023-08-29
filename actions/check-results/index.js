@@ -116,6 +116,20 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
     core.info(`Artifact JSON: ${artifact_json}`);
     core.info(`Workflow Name: ${workflow_name}`);
     core.info(`Workflow Run:  ${workflow_run}`);
+
+    // download artifact zip, extract file, and parse as JSON
+    const artifact_id = await findArtifact(workflow_run, artifact_name);
+    const parsed = await downloadArtifact(artifact_id, artifact_json);
+
+    // set output based on downloaded json
+    core.startGroup('Setting output...');
+    core.setOutput('json_string', JSON.stringify(parsed));
+
+    for (property in parsed) {
+      core.info(`${property}: ${JSON.stringify(parsed[property])}`);
+      core.setOutput(property, JSON.stringify(parsed[property]));
+    }
+    core.endGroup();    
   }
   catch(error) {
     core.startGroup('Outputting payload...');
