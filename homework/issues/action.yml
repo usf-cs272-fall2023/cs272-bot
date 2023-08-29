@@ -37,3 +37,12 @@ runs:
         artifact_name: "${{ inputs.artifact_name }}"
         artifact_json: "${{ inputs.artifact_json }}"
         workflow_name: "${{ inputs.workflow_name }}"
+
+    - uses: actions/github-script@v6
+      env:
+        STUDENT_JSON: "${{ steps.parse-issue.outputs.result }}"
+        RESULTS_JSON: "${{ steps.check-results.outputs.json_string }}"
+      with:
+        script: |
+          const script = require(`${process.env.ACTION_PATH}/success.js`);
+          return await script({github, context, core});
