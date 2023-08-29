@@ -130,6 +130,8 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
       core.setOutput(property, JSON.stringify(parsed[property]));
     }
     core.endGroup();
+
+    return parsed;
   }
   catch(error) {
     core.startGroup('Outputting payload...');
