@@ -89,7 +89,7 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
         const data = zip.readAsText(found);
         const parsed = JSON.parse(data);
   
-        core.info(`Parsed: ${JSON.stringify(parsed)}`);
+        core.info(`Parsed: ${JSON.stringify(parsed)}\n`);
         return parsed;
       }
       else {
@@ -129,7 +129,7 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
       core.info(`${property}: ${JSON.stringify(parsed[property])}`);
       core.setOutput(property, JSON.stringify(parsed[property]));
     }
-    core.endGroup();    
+    core.endGroup();
   }
   catch(error) {
     core.startGroup('Outputting payload...');
