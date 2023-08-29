@@ -40,7 +40,10 @@ module.exports = async ({github, context, core}) => {
 		const username = email_match[1];
 		const known_users = process.env.KNOWN_USERS;
 
-		if (!known_users.includes(username)) {
+		if (!known_users) {
+			core.info('Skipping check for known users...');
+		}
+		else if (!known_users.includes(username)) {
 			core.exportVariable('ERROR_MESSAGE', `Username ${username} is unknown. Check the email address for typos.`);
 			core.setFailed(process.env.ERROR_MESSAGE);
 			return;

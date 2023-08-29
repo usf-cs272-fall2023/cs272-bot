@@ -2,13 +2,9 @@ name: 'Late Homework'
 description: 'Handle late homework grade issues'
 
 inputs:
-  access_token:
-    description: 'Authentication token to access repositories'
-    required: true
-  
   known_users:
     description: 'Comma-separated list of known usernames'
-    required: true
+    required: false
 
   artifact_name:
     description: 'Name of artifact'
@@ -38,7 +34,6 @@ runs:
     - id: check_results
       uses: usf-cs272-fall2023/cs272-bot/actions/check-results@main
       with:
-        access_token:  "${{ inputs.access_token }}"
         artifact_name: "${{ inputs.artifact_name }}"
         artifact_json: "${{ inputs.artifact_json }}"
         workflow_name: "${{ inputs.workflow_name }}"
