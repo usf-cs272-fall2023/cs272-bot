@@ -24,7 +24,7 @@ module.exports = async ({github, context, core}) => {
 		core.info('');
 
 		// check that it is a USF email (e.g. sjengle@usfca.edu or sjengle@cs.usfca.edu)
-		const email_regex = /^([^@]+)@([^@]*\.)?usfca.edu$/;
+		const email_regex = /^([^@]+)@(?:[^@]*\.)?usfca.edu$/;
 		const email_match = parsed.email.match(email_regex);
 
 		if (email_match == null || email_match.length != 2) {
