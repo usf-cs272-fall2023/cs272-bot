@@ -28,7 +28,7 @@ module.exports = async ({github, context, core}) => {
       `
     });
 
-    let assignees = ['ybsolomon', 'FrankGuglielmo', 'clarejw', 'MalekeHan']
+    let assignees = ['ybsolomon', 'FrankGuglielmo', 'clarejw', 'MalekeHan'];
 
     await github.rest.issues.update({
       owner: context.repo.owner,

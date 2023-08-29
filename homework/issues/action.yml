@@ -40,6 +40,7 @@ runs:
 
     - uses: actions/github-script@v6
       env:
+        ACTION_PATH: ${{ github.action_path }}
         STUDENT_JSON: "${{ steps.parse-issue.outputs.result }}"
         RESULTS_JSON: "${{ steps.check-results.outputs.json_string }}"
       with:
