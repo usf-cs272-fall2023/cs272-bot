@@ -2,6 +2,10 @@ name: 'Late Homework'
 description: 'Handle late homework grade issues'
 
 inputs:
+  access_token:
+    description: 'Authentication token to access repositories'
+    required: false
+
   known_users:
     description: 'Comma-separated list of known usernames'
     required: false
