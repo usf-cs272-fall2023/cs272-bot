@@ -5,12 +5,19 @@ inputs:
   access_token:
     description: 'Authentication token to access repositories'
     required: true
+  
+  known_users:
+    description: 'Comma-separated list of known usernames'
+    required: true
+
   artifact_name:
     description: 'Name of artifact'
     required: true
+
   artifact_json:
     description: 'Name of artifact JSON file'
     required: true
+
   workflow_name:
     description: 'Name of workflow'
     required: true
@@ -22,7 +29,7 @@ runs:
       uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
-        KNOWN_USERS: ${{ secrets.KNOWN_USERS }}
+        KNOWN_USERS: ${{ inputs.known_users }}
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/parse.js`);

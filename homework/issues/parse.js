@@ -16,10 +16,13 @@ module.exports = async ({github, context, core}) => {
 
 				if (parsed.hasOwnProperty('runid')) {
 					core.exportVariable('GRADE_RUNID', `${parsed.runid}`);
-				}
+				}		
 
 				if (parsed.hasOwnProperty('name') && parsed.hasOwnProperty('email')) {
 					core.info(JSON.stringify(parsed));
+
+
+					
 					return JSON.stringify(parsed);
 				}
 
