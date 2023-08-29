@@ -41,8 +41,8 @@ runs:
     - uses: actions/github-script@v6
       env:
         ACTION_PATH: ${{ github.action_path }}
-        STUDENT_JSON: "${{ steps.parse_issue.outputs.result }}"
-        RESULTS_JSON: "${{ steps.check_results.outputs.json_string }}"
+        STUDENT_JSON: ${{ steps.parse_issue.outputs.result }}
+        RESULTS_JSON: ${{ steps.check_results.outputs.json_string }}
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/success.js`);

@@ -49,7 +49,7 @@ module.exports = async ({github, context, core}) => {
       return;
     }
 
-    return JSON.stringify(parsed);
+    return parsed;
   }
   catch (error) {
     core.exportVariable('ERROR_MESSAGE', error.message);
