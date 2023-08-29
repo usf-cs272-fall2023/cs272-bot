@@ -28,7 +28,8 @@ module.exports = async ({github, context, core}) => {
       `
     });
 
-    let assignees = ['halenander', 'mtquach2', 'ybsolomon'];
+    // get assignees from organization variable
+    let assignees = process.env.CS272_TAS.split(',');
 
     await github.rest.issues.update({
       owner: context.repo.owner,

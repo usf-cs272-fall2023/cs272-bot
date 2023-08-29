@@ -42,6 +42,7 @@ runs:
       env:
         STUDENT_JSON: "${{ steps.parse-issue.outputs.result }}"
         RESULTS_JSON: "${{ steps.check-results.outputs.json_string }}"
+        CS272_TAS: ${{ vars.CS272_TAS }}
       with:
         script: |
           const script = require(`${process.env.ACTION_PATH}/success.js`);
