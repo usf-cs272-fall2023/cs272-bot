@@ -3,41 +3,47 @@ module.exports = async ({github, context, core}) => {
 		core.info(`Parsing issue body...`);
 		const body = context.payload.issue.body;
 
-		const pattern = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\b\s*$/;
-		const matched = body.match(pattern);
-		core.info(matched);
+		const issue_regex = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\b\s*$/;
+		const issue_match = body.match(issue_regex);
+		core.info(issue_match);
+		core.info('');
 
-		if (matched !== null && matched.length === 3) {
-			try {
-				const parsed = {
-					'name': matched[1],
-					'email': matched[2],
-				};
-
-				if (parsed.hasOwnProperty('runid')) {
-					core.exportVariable('GRADE_RUNID', `${parsed.runid}`);
-				}		
-
-				if (parsed.hasOwnProperty('name') && parsed.hasOwnProperty('email')) {
-					core.info(JSON.stringify(parsed));
-
-
-					
-					return JSON.stringify(parsed);
-				}
-
-				core.exportVariable('ERROR_MESSAGE', `Required "name" and "email" properties missing from issue body.`);
-				core.setFailed(process.env.ERROR_MESSAGE);
-			}
-			catch (error) {
-				core.exportVariable('ERROR_MESSAGE', `Unable to parse issue body. Error: ${error.message}`);
-				core.setFailed(process.env.ERROR_MESSAGE);
-			}
-		}
-		else {
-			core.exportVariable('ERROR_MESSAGE', `Unable to find student details from issue body. Found: ${matched}`);
+		// check for unexpected match results
+		if (issue_match == null || issue_match.length != 3) {
+			core.exportVariable('ERROR_MESSAGE', `Unable to parse issue body. Error: ${error.message}`);
 			core.setFailed(process.env.ERROR_MESSAGE);
+			return;
 		}
+		
+		const parsed = {
+			'name': issue_match[1],
+			'email': issue_match[2],
+		};
+
+		core.info(JSON.stringify(parsed));
+		core.info('');
+
+		// check that it is a USF email (e.g. sjengle@usfca.edu or sjengle@cs.usfca.edu)
+		const email_regex = /^([^@]+)@([^@]*\.)?usfca.edu$/;
+		const email_match = parsed.email.match(email_regex);
+
+		if (email_match == null || email_match.length != 2) {
+			core.exportVariable('ERROR_MESSAGE', `The email ${parsed.email} does not appear to be a USF email.`);
+			core.setFailed(process.env.ERROR_MESSAGE);
+			return;
+		}
+
+		// check that it is one of the known users
+		const username = email_match[1].toLowerCase();
+		const known_users = process.env.KNOWN_USERS;
+
+		if (!known_users.includes(username)) {
+			core.exportVariable('ERROR_MESSAGE', `Username ${username} is unknown. Check the email address for typos.`);
+			core.setFailed(process.env.ERROR_MESSAGE);
+			return;
+		}
+
+		return JSON.stringify(parsed);
 	}
 	catch (error) {
 		core.exportVariable('ERROR_MESSAGE', error.message);
