@@ -12,3 +12,107 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
     core.setFailed('Unable to check the deadline and calculate a late penalty.');
   }
 };
+
+async function findWorkflowRun(workflow_name) {
+  core.startGroup(`Fetching latest runs for ${workflow_name}...`);
+
+  const runs = await octokit.rest.actions.listWorkflowRuns({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    workflow_id: `${workflow_name}`,
+    status: 'completed',
+    per_page: 5
+  });
+
+  if (runs.status === 200 && runs.data.total_count >= 0) {
+    core.info(`Found ${runs.data.total_count} workflow runs.`);
+
+    const first = runs.data.workflow_runs[0];
+    core.info(`Run ${first.id} started at ${first.run_started_at}.`);
+
+    const last = runs.data.workflow_runs[runs.data.workflow_runs.length - 1];
+    core.info(`Run ${last.id} started at ${last.run_started_at}.`);
+    core.info('');
+    core.endGroup();
+
+    return parseInt(first.id);
+  }
+
+  core.info(JSON.stringify(runs));
+  core.info('');
+  core.endGroup();
+
+  throw new Error(`Unable to fetch workflow runs for ${workflow_name}.`);
+}
+
+async function findArtifact(workflow_run, artifact_name) {
+  core.startGroup(`Fetching artifacts for run ${workflow_run}...`);
+
+  const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    run_id: workflow_run
+  });
+
+  if (artifacts.status === 200 && artifacts.data.total_count > 0) {
+    core.info(`Found ${artifacts.data.total_count} artifacts.`);
+    const found = artifacts.data.artifacts.find(r => artifact_name === r.name);
+
+    if (found !== undefined) {
+      core.info(`Found artifact ${found.id} named ${found.name}.`);
+      core.info('');
+      core.endGroup();
+
+      return parseInt(found.id);
+    }
+  }
+
+  core.info(JSON.stringify(artifacts));
+  core.info('');
+  core.endGroup();
+
+  throw new Error(`Unable to find ${artifact_name} for run ${workflow_run}.`);
+}
+
+async function downloadArtifact(artifact_id, artifact_json) {
+  core.startGroup(`Downloading artifact id ${artifact_id}...`);
+
+  const downloader = await octokit.rest.actions.downloadArtifact({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    artifact_id: artifact_id,
+    archive_format: 'zip'
+  });
+
+  if (downloader.status === 200) {
+    core.info(`Using ${downloader.url} for download.`);
+
+    // https://github.com/bettermarks/action-artifact-download
+    const zip = new AdmZip(Buffer.from(downloader.data));
+    const entries = zip.getEntries();
+    core.info(`Found ${entries.length} entries in zip file.`);
+
+    const found = entries.find(r => artifact_json == r.name);
+
+    if (found !== undefined) {
+      core.info(`Found ${found.name} in archive.`);
+      core.endGroup();
+      core.info('');
+
+      const data = zip.readAsText(found);
+      const parsed = JSON.parse(data);
+
+      core.info(`Parsed: ${JSON.stringify(parsed)}`);
+      return parsed;
+    }
+    else {
+      core.info(`Entries: ${entries.map(r => r.entryName)}`);
+    }
+  }
+
+  core.info(JSON.stringify(downloader));
+  core.info('');
+  core.endGroup();
+
+  throw new Error(`Unable to download ${artifact_id}.`);
+}
