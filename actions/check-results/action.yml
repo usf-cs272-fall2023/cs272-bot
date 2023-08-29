@@ -17,7 +17,7 @@ inputs:
 outputs:
   json_string:
     description: 'JSON file encoded as a string'
-    value: ${{ steps.check_results.outputs.json_string }}
+    value: "${{ steps.check_results.outputs.json_string }}"
 
 runs:
   # use composite and github-script instead of javascript so that 

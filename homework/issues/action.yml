@@ -47,3 +47,12 @@ runs:
         script: |
           const script = require(`${process.env.ACTION_PATH}/success.js`);
           return await script({github, context, core});
+
+    - uses: actions/github-script@v6
+      if: ${{ failure() }}
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      with:
+        script: |
+          const script = require(`${process.env.ACTION_PATH}/failure.js`);
+          return await script({github, context, core});

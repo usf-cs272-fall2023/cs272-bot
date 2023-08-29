@@ -3,7 +3,8 @@ module.exports = async ({github, context, core}) => {
     const student = JSON.parse(process.env.STUDENT_JSON);
     const results = JSON.parse(process.env.RESULTS_JSON);
 
-    core.info(student);
+    core.info(`Student: ${student}`);
+    core.info(`Results: ${results}`);
 
     await github.rest.issues.createComment({
       owner: context.repo.owner,
