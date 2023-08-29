@@ -29,9 +29,6 @@ runs:
   using: 'composite'
   steps:
     - shell: bash
-      run: npm install node-fetch
-
-    - shell: bash
       run: npm install adm-zip
 
     - id: check_results
@@ -44,7 +41,6 @@ runs:
       with:
         # using separate file for better syntax highlighting
         script: |
-          const fetch = require('node-fetch');
           const AdmZip = require("adm-zip");
           const script = require(`${process.env.ACTION_PATH}/index.js`);
           return await script({github, context, core, fetch, AdmZip});
