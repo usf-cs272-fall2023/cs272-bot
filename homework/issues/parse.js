@@ -3,7 +3,7 @@ module.exports = async ({github, context, core}) => {
     core.info(`Parsing issue body...`);
     const body = context.payload.issue.body;
 
-    const issue_regex = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\b\s*$/;
+    const issue_regex = /^### Full Name\s+([^\r\n]+)\s+### USF Email\s+([^\r\n]+)\b\s*$/;
     const issue_match = body.match(issue_regex);
     core.info(issue_match);
     core.info('');
