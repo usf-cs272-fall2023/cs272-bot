@@ -10,6 +10,7 @@ module.exports = async ({github, context, core}) => {
 
 		// check for unexpected match results
 		if (issue_match == null || issue_match.length != 3) {
+			core.info(`Issue Match: ${issue_match}`);
 			core.exportVariable('ERROR_MESSAGE', `Unable to parse issue body. Error: ${error.message}`);
 			core.setFailed(process.env.ERROR_MESSAGE);
 			return;
@@ -25,16 +26,18 @@ module.exports = async ({github, context, core}) => {
 
 		// check that it is a USF email (e.g. sjengle@usfca.edu or sjengle@cs.usfca.edu)
 		const email_regex = /^([^@]+)@(?:[^@]*\.)?usfca.edu$/;
-		const email_match = parsed.email.match(email_regex);
+		const email_match = parsed.email.toLowerCase().match(email_regex);
 
 		if (email_match == null || email_match.length != 2) {
+			core.info(`Email Match: ${email_match}`);
+
 			core.exportVariable('ERROR_MESSAGE', `The email ${parsed.email} does not appear to be a USF email.`);
 			core.setFailed(process.env.ERROR_MESSAGE);
 			return;
 		}
 
 		// check that it is one of the known users
-		const username = email_match[1].toLowerCase();
+		const username = email_match[1];
 		const known_users = process.env.KNOWN_USERS;
 
 		if (!known_users.includes(username)) {
