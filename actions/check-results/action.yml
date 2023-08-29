@@ -5,18 +5,18 @@ inputs:
   access_token:
     description: 'Authentication token to access repositories'
     required: true
+
   artifact_name:
     description: 'Name of artifact'
     required: true
+
   artifact_json:
     description: 'Name of artifact JSON file'
     required: true
+
   workflow_name:
     description: 'Name of workflow'
     required: true
-  workflow_run:
-    description: 'Run ID of workflow'
-    required: false
 
 outputs:
   json_string:
@@ -41,7 +41,6 @@ runs:
         ARTIFACT_NAME: "${{ inputs.artifact_name }}"
         ARTIFACT_JSON: "${{ inputs.artifact_json }}"
         WORKFLOW_NAME: "${{ inputs.workflow_name }}"
-        WORKFLOW_RUN:  "${{ inputs.workflow_run }}"
       with:
         # using separate file for better syntax highlighting
         script: |
