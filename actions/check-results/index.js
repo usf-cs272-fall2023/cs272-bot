@@ -1,8 +1,8 @@
 module.exports = async ({github, context, core, fetch, AdmZip}) => {
   try {
-    const artifact_name = core.getInput('artifact_name', { required: true });
-    const artifact_json = core.getInput('artifact_json', { required: true });
-    const workflow_name = core.getInput('workflow_name', { required: true });
+    const artifact_name = process.env.ARTIFACT_NAME;
+    const artifact_json = process.env.ARTIFACT_JSON;
+    const workflow_name = process.env.WORKFLOW_NAME;
 
     const workflow_run = await findWorkflowRun(workflow_name);
 
