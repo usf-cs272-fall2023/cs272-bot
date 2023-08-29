@@ -3,9 +3,9 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
   async function findWorkflowRun(workflow_name) {
     core.startGroup(`Fetching latest runs for ${workflow_name}...`);
   
-    const runs = await octokit.rest.actions.listWorkflowRuns({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+    const runs = await github.rest.actions.listWorkflowRuns({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
       workflow_id: `${workflow_name}`,
       status: 'completed',
       per_page: 5
@@ -35,9 +35,9 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
   async function findArtifact(workflow_run, artifact_name) {
     core.startGroup(`Fetching artifacts for run ${workflow_run}...`);
   
-    const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+    const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
       run_id: workflow_run
     });
   
@@ -64,9 +64,9 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
   async function downloadArtifact(artifact_id, artifact_json) {
     core.startGroup(`Downloading artifact id ${artifact_id}...`);
   
-    const downloader = await octokit.rest.actions.downloadArtifact({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
+    const downloader = await github.rest.actions.downloadArtifact({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
       artifact_id: artifact_id,
       archive_format: 'zip'
     });
@@ -119,11 +119,11 @@ module.exports = async ({github, context, core, fetch, AdmZip}) => {
   }
   catch(error) {
     core.startGroup('Outputting payload...');
-    console.log(JSON.stringify(github.context.payload));
+    console.log(JSON.stringify(context.payload));
     core.endGroup();
   
     core.startGroup('Outputting context...');
-    console.log(JSON.stringify(github.context));
+    console.log(JSON.stringify(context));
     core.endGroup();
   
     core.exportVariable('ERROR_MESSAGE', error.message);
