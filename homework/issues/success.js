@@ -1,5 +1,6 @@
 module.exports = async ({github, context, core}) => {
   try {
+    core.log('hello world');
     const student = JSON.parse(process.env.STUDENT_JSON);
     const results = JSON.parse(process.env.RESULTS_JSON);
 
