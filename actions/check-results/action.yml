@@ -14,6 +14,10 @@ inputs:
     description: 'Name of workflow'
     required: true
 
+  workflow_run:
+    description: 'Run ID of workflow'
+    required: false
+
 outputs:
   json_string:
     description: 'JSON file encoded as a string'
@@ -35,6 +39,7 @@ runs:
         ARTIFACT_NAME: "${{ inputs.artifact_name }}"
         ARTIFACT_JSON: "${{ inputs.artifact_json }}"
         WORKFLOW_NAME: "${{ inputs.workflow_name }}"
+        WORKFLOW_RUN: "${{ inputs.workflow_run }}"
       with:
         # using separate file for better syntax highlighting
         script: |
