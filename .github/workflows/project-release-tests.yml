@@ -148,7 +148,7 @@ jobs:
         with:
           script: |
             const command = 'mvn'
-            const args = ['-ntp', '-Dconfig.xlint=-Xlint:none', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=false', '-DcompileOptionFail=false', 'compile'];
+            const args = ['-ntp', '-Dconfig.xlint=-Xlint:none', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=false', '-Dconfig.werror=false', 'compile'];
             const cwd = `${process.env.USER_PATH}`;
             const message = `Unable to compile project source code using Maven.`;
             const expected = 0;
@@ -174,7 +174,7 @@ jobs:
         with:
           script: |
             const command = 'mvn'
-            const args = ['-ntp', '-Dconfig.xlint=-Xlint:none', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=false', '-DcompileOptionFail=false', 'test-compile'];
+            const args = ['-ntp', '-Dconfig.xlint=-Xlint:none', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=false', '-Dconfig.werror=false', 'test-compile'];
             const cwd = `${process.env.USER_PATH}`;
             const message = `Unable to compile project test code using Maven.`;
             const expected = 0;

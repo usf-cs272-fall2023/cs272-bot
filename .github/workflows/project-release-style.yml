@@ -88,7 +88,7 @@ jobs:
         with:
           script: |
             const command = 'mvn'
-            const args = ['-ntp', '-Dconfig.xlint=-Xlint:all,-processing,-path', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=true', '-DcompileOptionFail=true', 'clean', 'compile'];
+            const args = ['-ntp', '-Dconfig.xlint=-Xlint:all,-processing,-path', '-Dconfig.xdoclint=-Xdoclint:none', '-Dmaven.compiler.showWarnings=true', '-Dconfig.werror=true', 'clean', 'compile'];
             const cwd = `${process.env.USER_PATH}`;
             const message = `Unable to compile project source code without warnings.`;
             const expected = 0;
@@ -109,7 +109,7 @@ jobs:
         with:
           script: |
             const command = 'mvn'
-            const args = ['-ntp', '-Dconfig.xlint=-Xlint:preview', '-Dconfig.xdoclint=-Xdoclint:all/private', '-Dmaven.compiler.showWarnings=true', '-DcompileOptionFail=true', 'clean', 'compile'];
+            const args = ['-ntp', '-Dconfig.xlint=-Xlint:preview', '-Dconfig.xdoclint=-Xdoclint:all/private', '-Dmaven.compiler.showWarnings=true', '-Dconfig.werror=true', 'clean', 'compile'];
             const cwd = `${process.env.USER_PATH}`;
             const message = `Unable to compile project source code without Javadoc warnings.`;
             const expected = 0;
