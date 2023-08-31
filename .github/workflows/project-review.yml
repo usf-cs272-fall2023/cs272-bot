@@ -41,3 +41,11 @@ jobs:
           script: |
             const script = require('./workflows/.github/scripts/review-update.js');
             return await script({github, context, core});
+
+      - name: 'Create review grade issue'
+        id: review_grade
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const script = require('./workflows/.github/scripts/review-grade.js');
+            return await script({github, context, core});
