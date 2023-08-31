@@ -15,12 +15,12 @@ module.exports = async ({github, context, core}) => {
     });
 
     core.info(`Found ${response.data.length} workflows...`);
-    core.info(JSON.stringify(response));
 
     if (response.data.length >= 100) {
       error_messages.push(`Maximum number of workflow runs exceeded. Results may be unreliable.`);
     }
 
+    // workflows triggered on workflow call not being found because ref is main
     const filtered = response.data.workflow_runs.filter(run => run.status === 'completed' && run.head_branch === release);
 
     if (filtered.length < 1) {
