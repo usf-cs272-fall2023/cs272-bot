@@ -11,18 +11,6 @@ module.exports = async ({github, context, core}) => {
       error_messages.push(`Pull request has an unexpected review state (${state}).`);
     }
 
-    // make sure does not have an error label
-    const labels = new Set(context.payload.pull_request.labels.map(label => label.name));
-
-    if (labels.has('error')) {
-      error_messages.push(`Pull request has an unexpected "error" label.`);
-    }
-    
-    // make sure has one of the 3 status labels
-    if (!labels.has('resubmit-code-review') && !labels.has('resubmit-quick-review') && !labels.has('review-passed')) {
-      error_messages.push(`Pull request is missing a status label.`);
-    }
-
     // get version number from head ref
     const head_ref = context.payload.pull_request.head.ref;
     const pattern = /review\/(v(\d+)\.(\d+)\.(\d+))/g;
@@ -43,11 +31,9 @@ module.exports = async ({github, context, core}) => {
     if (project > 3 || major > 2) {
       // do not create a grade issue (this is not an error)
       core.info(`Release ${release} does not need a code review grade.`);
-      return;
     }
-
-    // create issue if there were no errors so far
-    if (error_messages.length == 0) {
+    else if (error_messages.length == 0) {
+      // create issue if there were no errors so far
       const issue = {
         owner: context.repo.owner,
         repo: context.repo.repo
