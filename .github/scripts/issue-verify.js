@@ -284,7 +284,7 @@ module.exports = async ({github, context, core}) => {
           for (const issue of current['grade-review']) {
             const found = issue.labels.find(label => label.name.startsWith(`v${major}.${minor}`));
             if (found != undefined) {
-              error_messages.push(`You already requested project ${major} review grade for release ${found.name} in issue #${issue.number}. If you are missing an expected grade on Canvas, please post on Piazza.`);
+              error_messages.push(`You already requested project ${major} review grade for release ${found.name} in issue #${issue.number}. If you are missing an expected grade on Canvas, please post on CampusWire.`);
               return; // exit out of try block
             }
           }
@@ -332,7 +332,7 @@ module.exports = async ({github, context, core}) => {
 
           // if the found issue isn't this one
           if (found.number != context.issue.number) {
-            error_messages.push(`You already requested a project ${major} design grade in issue #${found.number}. You only need to request this grade ONCE per project. If the issue is closed and you do not see a grade on Canvas yet, please post on Piazza asking for an update.`);
+            error_messages.push(`You already requested a project ${major} design grade in issue #${found.number}. You only need to request this grade ONCE per project. If the issue is closed and you do not see a grade on Canvas yet, please post on CampusWire asking for an update.`);
             return; // exit out of try block
           }
         }

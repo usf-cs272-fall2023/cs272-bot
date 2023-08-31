@@ -67,7 +67,7 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
 | Late&nbsp;Penalty:  | -${late_points} points (-${late_percent}%) |
 | Final&nbsp;Grade:   | **${grade_points}** / ${grade_possible} points (${grade_percent}%) |
 
-:white_check_mark: We will close this issue after updating your grade on Canvas. If your grade is not updated in 2 business days, please reach out on Piazza.
+:white_check_mark: We will close this issue after updating your grade on Canvas. If your grade is not updated in 2 business days, please reach out on CampusWire.
       `;
     }
     else if (request_type == 'request_review') {
@@ -158,7 +158,7 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
 
   1. :spiral_calendar: ${signup_link}
 
-  2. :warning: Make sure to sign up for a single appointment on or after **${eligible_date.toLocaleString(DateTime.DATETIME_FULL)}**. *If there are no appointments in the next 3 business days, make a **public post** on Piazza to see if more can be added to the schedule.*
+  2. :warning: Make sure to sign up for a single appointment on or after **${eligible_date.toLocaleString(DateTime.DATETIME_FULL)}**. *If there are no appointments in the next 3 business days, make a **public post** on CampusWire to see if more can be added to the schedule.*
 
   3. :no_entry_sign: Do not make modifications to the code in your \`main\` branch before your appointment. *If your code is not ready for code review, close this request, cancel your appointment, and re-request a code review when your code is ready.*
 
@@ -168,7 +168,7 @@ Make sure to attend your appointment on-time; arriving more than 5 minutes late 
       `;
     }
     else {
-      message = `:octocat: @${ context.actor }, this is an [unexpected request type](${request_link}). Please reach out to the instructor on Piazza.`;
+      message = `:octocat: @${ context.actor }, this is an [unexpected request type](${request_link}). Please reach out to the instructor on CampusWire.`;
       core.warning(`Unexpected request type: ${request_type}`);
     }
 
