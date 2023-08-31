@@ -30,7 +30,7 @@ module.exports = async ({github, context, core}) => {
     }
 
     // parse issue body 
-    const pattern = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\s+### Release\s+([^\n]+)\b\s*$/;
+    const pattern = /^### Full Name\s+([^\r\n]+)\s+### USF Email\s+([^\r\n]+)\s+### Release\s+([^\r\n]+)\b\s*$/;
     const matched = body.match(pattern);
 
     if (matched === null || matched.length !== 4) {
@@ -39,11 +39,11 @@ module.exports = async ({github, context, core}) => {
       return; // don't continue try block
     }
 
-    output.name = matched[1];
-    output.email = matched[2];
-    output.release = matched[3];
+    output.name = matched[1].trim();
+    output.email = matched[2].trim();
+    output.release = matched[3].trim();
 
-    core.info(`Parsed: ${output}`);
+    core.info(`Parsed: ${JSON.stringify(output)}`);
 
     // attempt to parse the release
     const tag_regex = /^v([1-4])\.(\d+)\.(\d+)$/;
