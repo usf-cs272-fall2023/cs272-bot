@@ -36,7 +36,7 @@ jobs:
         id: parse_request
         uses: actions/github-script@v6
         env:
-          KNOWN_USERS: ${{ secrets.KNOWN_USERS }}        
+          KNOWN_USERS: ${{ secrets.KNOWN_USERS }}
         with:
           script: |
             const script = require('./workflows/.github/scripts/issue-parse.js');
