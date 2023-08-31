@@ -75,9 +75,13 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
       const review_text = review_type == 'request-code-review' ? 'Code' : 'Quick';
       const review_time = review_type == 'request-code-review' ? 20 : 10;
 
-      core.info(results);
+      const download_json = JSON.parse(results?.download_json?.outputs?.json_string);
 
-      const release_date = DateTime.fromISO(JSON.parse(results?.download_json?.outputs?.release_date));
+      core.startGroup('Outputting downloaded JSON results...');
+      core.info(JSON.stringify(download_json));
+      core.endGroup();
+
+      const release_date = DateTime.fromISO(download_json?.release_date));
       const today_date = DateTime.now();
 
       core.info(`Review Type: ${review_text} Review`);

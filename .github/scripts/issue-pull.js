@@ -17,7 +17,7 @@ module.exports = async ({github, context, core}) => {
     output.pull_request = result.data.number;
   }
   catch (error) {
-    if (error.name.includes('issue is already attached to a pull request')) {
+    if (error.message.includes('issue is already attached to a pull request')) {
       core.warning(`Issue #${context.payload.issue.number} is already attached to a pull request.`);
     }
     else {
