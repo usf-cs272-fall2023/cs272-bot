@@ -81,7 +81,7 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
       core.info(JSON.stringify(download_json));
       core.endGroup();
 
-      const release_date = DateTime.fromISO(download_json?.release_date));
+      const release_date = DateTime.fromISO(download_json?.release_date);
       const today_date = DateTime.now();
 
       core.info(`Review Type: ${review_text} Review`);
