@@ -107,6 +107,8 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
         eligible_date = today_date;
       }
 
+      core.info(`Eligible date: ${eligible_date}`);
+
       // create appointment link
       const autofill = `name=${encodeURIComponent(student_name)}&email=${encodeURIComponent(usf_email)}&a1=${encodeURIComponent(context.payload.issue.html_url)}`;
 
