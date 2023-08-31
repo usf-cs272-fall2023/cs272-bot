@@ -6,7 +6,7 @@ module.exports = async ({github, context, core}) => {
 
   switch (context.eventName) {
     case 'release':
-      release_ref = context.ref;
+      release_ref = context.ref ? context.ref : `refs/tags/${context.payload.release.tag_name}`;
       release_id = context.payload.release.id;
       release_date = context.payload.release.created_at;
       break;
