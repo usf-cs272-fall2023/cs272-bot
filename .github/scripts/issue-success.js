@@ -2,6 +2,10 @@
 module.exports = async ({github, context, core, DateTime, Settings}) => {
   const results = JSON.parse(process.env.RESULTS);
 
+  core.startGroup('Outputting step results...');
+  core.info(JSON.stringify(results));
+  core.endGroup();
+
   const review_delay = 4; // days to wait in between code reviews
 
   const request_type = results.parse_request.outputs.request_type;
@@ -70,6 +74,8 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
       const review_type = results?.verify_request?.outputs?.next_type;
       const review_text = review_type == 'request-code-review' ? 'Code' : 'Quick';
       const review_time = review_type == 'request-code-review' ? 20 : 10;
+
+      core.info(results);
 
       const release_date = DateTime.fromISO(JSON.parse(results?.download_json?.outputs?.release_date));
       const today_date = DateTime.now();
