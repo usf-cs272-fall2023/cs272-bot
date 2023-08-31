@@ -40,6 +40,7 @@ module.exports = async ({github, context, core}) => {
   }
 
   core.info(`Using release reference: ${release_ref} (id ${release_id})`);
+  core.info(JSON.stringify(context));
 
   // parse release ref into parts
   const regex = /^refs\/tags\/v([1-5])\.(\d+)\.(\d+)$/;
