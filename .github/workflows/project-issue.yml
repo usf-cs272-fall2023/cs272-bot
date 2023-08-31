@@ -98,7 +98,6 @@ jobs:
           assignment_name: '${{ steps.verify_request.outputs.assignment_name }}'
           starting_points: '${{ steps.verify_request.outputs.starting_points }}'
           submitted_date:  '${{ steps.verify_request.outputs.submitted_date }}'
-          extension_hours: '${{ steps.parse_request.outputs.extension_hours }}'
 
       - name: 'Create pull request'
         id: create_pull
