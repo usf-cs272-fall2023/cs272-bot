@@ -64,7 +64,7 @@ module.exports = async ({github, context, core}) => {
 
     if (email_match == null || email_match.length != 2) {
       core.info(`Email Match: ${email_match}`);
-      error_messages.push(`The email ${parsed.email} does not appear to be a USF email.`);
+      error_messages.push(`The email ${output.email} does not appear to be a USF email.`);
       return;
     }
     
