@@ -17,7 +17,12 @@ module.exports = async ({github, context, core}) => {
     output.pull_request = result.data.number;
   }
   catch (error) {
-    error_messages.push(`Unable to create pull request for release ${release} (${error.name}: ${error.message}).`);
+    if (error.name.includes('issue is already attached to a pull request')) {
+      core.warning(`Issue #${context.payload.issue.number} is already attached to a pull request.`);
+    }
+    else {
+      error_messages.push(`Unable to create pull request for release ${release} (${error.name}: ${error.message}).`);
+    }
   }
   finally {
     // output and set results
