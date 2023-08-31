@@ -75,6 +75,8 @@ module.exports = async ({github, context, core}) => {
         }
       }
 
+      core.log(`Project: ${project}, Issue Types: ${issue_types}`);
+
       if (!project || !parsed.hasOwnProperty(project)) {
         core.info(`Skipping issue #${issue.number} due to missing "project" label.`);
       }
