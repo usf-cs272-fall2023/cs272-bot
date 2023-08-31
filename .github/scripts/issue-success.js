@@ -29,6 +29,9 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
 
     let message = undefined;
 
+    core.info(`Name: ${student_name}, Email: ${usf_email}`);
+    core.info(`Release Tag: ${release_tag}, Verified ID: ${verified_id}`);
+
     if (grade_request) {
       const late_interval   = results?.calculate_grade?.outputs?.late_interval;
       const late_multiplier = results?.calculate_grade?.outputs?.late_multiplier;
@@ -71,6 +74,9 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
       const release_date = DateTime.fromISO(JSON.parse(results?.download_json?.outputs?.release_date));
       const today_date = DateTime.now();
 
+      core.info(`Review Type: ${review_text} Review`);
+      core.info(`Release Date: ${release_date}`);
+
       let eligible_date = undefined;
 
       const last_type = results?.verify_request?.outputs?.last_type;
@@ -107,7 +113,7 @@ module.exports = async ({github, context, core, DateTime, Settings}) => {
         eligible_date = today_date;
       }
 
-      core.info(`Eligible date: ${eligible_date}`);
+      core.info(`Eligible Date: ${eligible_date}`);
 
       // create appointment link
       const autofill = `name=${encodeURIComponent(student_name)}&email=${encodeURIComponent(usf_email)}&a1=${encodeURIComponent(context.payload.issue.html_url)}`;
