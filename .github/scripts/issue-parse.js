@@ -30,7 +30,6 @@ module.exports = async ({github, context, core}) => {
     }
 
     // parse issue body 
-    // const json_regex = /```json([^`]+)```/;
     const pattern = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\s+### Release\s+([^\n]+)\b\s*$/;
     const matched = body.match(pattern);
 
@@ -43,6 +42,8 @@ module.exports = async ({github, context, core}) => {
     output.name = matched[1];
     output.email = matched[2];
     output.release = matched[3];
+
+    core.info(`Parsed: ${output}`);
 
     // attempt to parse the release
     const tag_regex = /^v([1-4])\.(\d+)\.(\d+)$/;
