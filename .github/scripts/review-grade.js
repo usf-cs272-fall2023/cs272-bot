@@ -7,7 +7,7 @@ module.exports = async ({github, context, core}) => {
 
     if (state != 'approved') {
       core.warning(`A review grade request was not created due to an unexpected review state (${state}). Please manually create a review grade issue instead.`);
-      return;
+      // return;
     }
 
     // make sure does not have an error label
