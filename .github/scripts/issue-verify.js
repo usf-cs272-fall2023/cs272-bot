@@ -127,15 +127,15 @@ module.exports = async ({github, context, core}) => {
         }
 
         // check if there is an issue for this request already
-        // if ('grade-tests' in current) {
-        //   const found = current['grade-tests'][0];
-
-        //   // if the found issue isn't this one
-        //   if (found.number != context.issue.number) {
-        //     error_messages.push(`You already requested a project ${major} tests grade in issue #${found.number}. You only need to request this grade ONCE per project. If the issue is closed and you do not see a grade on Canvas yet, please post on Piazza asking for an update.`);
-        //     return; // exit out of try block
-        //   }
-        // }
+        if ('grade-tests' in current) {
+          const prefix = `v${major}.${minor}`;
+          for (const found of current['grade-tests']) {
+            if (found.labels.some(label => label.startsWith(prefix)) && found.number != context.issue.number) {
+              error_messages.push(`You already requested a project v${major}.${minor} tests grade in issue #${found.number}. You only need to request this grade ONCE per project. If the issue is closed and you do not see a grade on Canvas yet, please post on the course forum asking for an update.`);
+              return; // exit out of try block
+            }
+          }
+        }
 
         // check if there is a previous project
         if (previous != undefined) {
