@@ -14,6 +14,9 @@ module.exports = async ({github, context, core}) => {
       per_page: 100
     });
 
+    core.info(`Found ${response.data.length} workflows...`);
+    core.info(JSON.stringify(response));
+
     if (response.data.length >= 100) {
       error_messages.push(`Maximum number of workflow runs exceeded. Results may be unreliable.`);
     }
