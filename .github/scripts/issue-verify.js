@@ -273,7 +273,7 @@ module.exports = async ({github, context, core}) => {
         break;
 
       case 'grade_review':
-        if (minor > 1) {
+        if (minor > 2) {
           error_messages.push(`You do not need to request a project review grade for a v${major}.${minor} release.`);
           return;
         }
