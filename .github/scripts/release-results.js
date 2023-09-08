@@ -68,7 +68,7 @@ module.exports = async ({github, context, core, fs}) => {
         if (output.review_passed != undefined) {
           output.grade_design = true;
 
-          if (minor < 2) {
+          if (minor < 3) {
             // happens rarely; only when students have already made progress on this project in previous semesters
             output.grade_review = true;
             core.notice(`✅ The release ${release} may be used to request a project ${major} review and design grade (request in two separate issues).`);
@@ -80,7 +80,7 @@ module.exports = async ({github, context, core, fs}) => {
         else {
           output.request_review = true;
 
-          if (minor < 2) {
+          if (minor < 3) {
             output.grade_review = true;
             core.notice(`✅ The release ${release} may be used to request a project ${major} code review appointment and review grade when that appointment is complete.`);
           }
