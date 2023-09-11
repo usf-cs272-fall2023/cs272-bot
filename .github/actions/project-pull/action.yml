@@ -93,7 +93,7 @@ runs:
       with:
         script: |
           const command = 'git';
-          const args = ['checkout', '-b', `review/${process.env.RELEASE_TAG}`];
+          const args = ['checkout', '-b', `review/${process.env.RELEASE_TAG}`, `tags/${process.env.RELEASE_TAG}`];
           const cwd = `${process.env.USER_PATH}`;
           const message = `Unable to create review branch for release ${process.env.RELEASE_TAG}. If this branch already exists, please delete it before requesting code review or request code review of a different release.`;
           const expected = 0;
