@@ -14,8 +14,6 @@ module.exports = async ({github, context, core}) => {
       per_page: 100
     });
 
-
-
     core.info(`Found ${response.data.total_count} workflows...`);
 
     if (response.data.total_count >= 100) {
