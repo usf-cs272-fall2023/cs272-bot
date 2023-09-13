@@ -32,8 +32,6 @@ module.exports = async ({github, context, core}) => {
     let footer  = `See [run #${context.runNumber} (id ${context.runId})](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`;
 
     // parse pull request body 
-    // const json_regex = /```json([^`]+)```/;
-    // const json_match = body.match(json_regex);
     const pattern = /^### Full Name\s+([^\r\n]+)\s+### USF Email\s+([^\r\n]+)\s+### Release\s+([^\r\n]+)\b\s*$/;
     const matched = body.match(pattern);
 
