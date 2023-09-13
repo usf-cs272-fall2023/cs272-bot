@@ -94,8 +94,8 @@ module.exports = async ({github, context, core}) => {
 
           default:
             header += 'the review comment has an unexpected format:'
-            comment = `  > ${body}`;
-            core.setFailed(`The review comment has an unexpected format: ${body}`);
+            comment = `  > ${review}`;
+            core.setFailed(`The review comment has an unexpected format: ${review}`);
         }
       }
     }
