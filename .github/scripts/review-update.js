@@ -34,7 +34,7 @@ module.exports = async ({github, context, core}) => {
     // parse pull request body 
     // const json_regex = /```json([^`]+)```/;
     // const json_match = body.match(json_regex);
-    const pattern = /^### Full Name\s+([^\n]+)\s+### USF Email\s+([^\n]+)\s+### Release\s+([^\n]+)\b\s*$/;
+    const pattern = /^### Full Name\s+([^\r\n]+)\s+### USF Email\s+([^\r\n]+)\s+### Release\s+([^\r\n]+)\b\s*$/;
     const matched = body.match(pattern);
 
     if (matched === null || matched.length !== 4) {
