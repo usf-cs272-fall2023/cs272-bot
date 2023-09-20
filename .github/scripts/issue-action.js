@@ -21,7 +21,7 @@ module.exports = async ({github, context, core}) => {
     }
 
     // workflows triggered on workflow call not being found because ref is main
-    const filtered = response.data.workflow_runs.filter(run => run.status === 'completed' && run.head_branch === release);
+    const filtered = response.data.workflow_runs.filter(run => run.status === 'completed' && (run.head_branch === release || run.display_title === release));
 
     if (filtered.length < 1) {
       const workflows = response.data.workflow_runs.map(run => [run.display_title, run.head_branch, run.status, run.conclusion]);
