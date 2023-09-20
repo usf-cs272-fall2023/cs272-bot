@@ -24,6 +24,8 @@ module.exports = async ({github, context, core}) => {
     const filtered = response.data.workflow_runs.filter(run => run.status === 'completed' && run.head_branch === release);
 
     if (filtered.length < 1) {
+      const workflows = response.data.workflow_runs.map(run => [run.display_title, run.head_branch, run.status, run.conclusion]);
+      core.info(workflows);
       error_messages.push(`Unable to find workflow run for release ${release}. Double-check the correct release version is entered and all action runs for that release have completed.`);
     }
     else {
