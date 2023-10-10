@@ -153,3 +153,16 @@ runs:
         echo "::group::Resolving dependencies..."
         mvn dependency:go-offline
         echo "::endgroup::"
+
+    - name: "Configure Maven logger"
+      id: config_maven
+      shell: bash
+      run: |
+        echo "Outputting current log configuration..."
+        cd /usr/share/apache-maven-3.8.8/conf/logging/
+        cat simplelogger.properties
+
+        echo ""
+        echo "Outputting new log configuration..."
+        cp ${{ github.action_path }}/simplelogger.properties .
+        cat simplelogger.properties
