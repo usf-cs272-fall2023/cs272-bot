@@ -75,7 +75,7 @@ module.exports = async ({github, context, core}) => {
   - [ ] Fix any remaining \`TODO\` comments in the code, then commit and push those changes to GitHub. Then, create a new \`v${version_major}.${version_minor + 1}.x\` release that passes all of the checks.
   - [ ] Use the [Request Project Code Review](${context.payload.repository.html_url}/issues/new?assignees=&labels=&template=project-code-review.yml&title=Request+Project+Code+Review) issue template to request your next code review appointment for the new \`v${version_major}.${version_minor + 1}.x\` release.`;
 
-            if (version_minor < 2) {
+            if (version_minor <= 2) {
               comment = `
   - [ ] Use the [Request Project Review Grade](${context.payload.repository.html_url}/issues/new?assignees=&labels=grade-review&template=project-grade-review.yml&title=Request+Project+Review+Grade) issue template to request your project ${version_major} review ${version_minor + 1} grade. Use release \`${parsed.release}\` in the request.${comment}`;
             }
