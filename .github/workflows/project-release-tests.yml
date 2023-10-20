@@ -213,6 +213,13 @@ jobs:
               core.setFailed(message);
             }
 
+      - name: 'List all project files'
+        id: list_project
+        if: ${{ failure() && steps.run_this_tests.conclusion == 'failure' }}
+        working-directory: '${{ steps.generate_keys.outputs.user_path }}'
+        run: |
+          ls -ACGR .
+
       - name: 'Save current project results'
         id: save_results
         if: ${{ failure() && steps.run_this_tests.conclusion == 'failure' }}
