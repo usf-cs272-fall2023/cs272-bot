@@ -198,6 +198,7 @@ jobs:
         env:
           TEST_TAG: 'test-${{ steps.parse_release.outputs.test_number }}'
           USER_PATH: '${{ steps.generate_keys.outputs.user_path }}'
+          SKIP_ACTUAL_CLEANUP: 'true'
         with:
           script: |
             const command = 'mvn'
