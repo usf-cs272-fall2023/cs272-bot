@@ -216,9 +216,9 @@ jobs:
       - name: 'List all project files'
         id: list_project
         if: ${{ failure() && steps.run_this_tests.conclusion == 'failure' }}
-        working-directory: '${{ steps.generate_keys.outputs.user_path }}'
         run: |
-          ls -ACGR .
+          ls -ACGR "${{ steps.generate_keys.outputs.user_path }}"
+          ls -ACGR "${{ steps.generate_keys.outputs.test_path }}"
 
       - name: 'Save current project results'
         id: save_results
