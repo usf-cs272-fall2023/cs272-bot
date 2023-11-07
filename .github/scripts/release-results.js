@@ -60,6 +60,10 @@ module.exports = async ({github, context, core, fs}) => {
         output.grade_tests = true;
         core.notice(`✅ The release ${release} may be used to request a project v${major}.${minor} tests grade. This grade only needs to be requested once.`);
       }
+      else if (minor == 2 && major == 3) {
+        output.grade_tests = true;
+        core.notice(`✅ The release ${release} may be used to request a project v${major}.${minor} tests grade. This grade only needs to be requested once.`);
+      }
       else {
         core.info(`ℹ️ The release ${release} cannot be used to request a project ${major} tests grade because of the minor version number.`);
       }
