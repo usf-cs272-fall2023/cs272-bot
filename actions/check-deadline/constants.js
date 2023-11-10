@@ -10,8 +10,8 @@ exports.deadlines = {
   'LoggerSetup':      {'max': 100, 'due': '2023-10-16'},
   'MultiReaderLock':  {'max': 100, 'due': '2023-10-20'},
   'PrimeFinder':      {'max': 100, 'due': '2023-10-27'},
-  'HtmlFetcher':      {'max': 100, 'due': '2023-11-10'},
   'HtmlCleaner':      {'max': 100, 'due': '2023-11-03'},
+  'HtmlFetcher':      {'max': 100, 'due': '2023-11-17'},
   'LinkFinder':       {'max': 100, 'due': '2023-11-17'},
 	'HeaderServer':     {'max': 100, 'due': '2023-12-01'},
 
