@@ -87,7 +87,7 @@ module.exports = async ({github, context, core, fs}) => {
         else {
           if (major == 4 || major == 5) {
             if (minor < 1) {
-              core.info(`ℹ️ The release ${release} passes the style checks, but project v${major}.${minor} releases do not have code reviews.`);
+              core.notice(`ℹ️ The release ${release} passes the style checks, but project v${major}.${minor} releases do not have code reviews.`);
             }
             else {
               output.request_review = true;
