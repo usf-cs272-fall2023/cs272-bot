@@ -57,7 +57,7 @@ module.exports = async ({github, context, core, fs}) => {
     }
     else {
       if (major == 5) {
-        core.notice(`ℹ️ The release ${release} functionality will be manually verified and graded in your last code review appointment during finals week.`);
+        core.notice(`ℹ️ The release ${release} functionality will be manually tested in your last code review appointment during finals week.`);
       }
       else if (minor < 2) {
         output.grade_tests = true;
@@ -87,9 +87,10 @@ module.exports = async ({github, context, core, fs}) => {
         else {
           if (major == 4 || major == 5) {
             if (minor < 1) {
-              core.info(`ℹ️ The release ${release} cannot be used to request a code review. Only a v${major}.1 release will be reviewed in your last code review during finals week.`);
+              core.info(`ℹ️ The release ${release} passes the style checks, but project v${major}.${minor} releases do not have code reviews.`);
             }
             else {
+              output.request_review = true;
               core.notice(`✅ The release ${release} may be used for a project ${major} code review and design grade during finals week.`);
             }
           }
