@@ -200,12 +200,6 @@ module.exports = async ({github, context, core}) => {
           return; // exit out of try block
         }
 
-        // project v4.0 and v5.0 have no code reviews
-        if ((major == 4 || major == 5) && minor == 0) {
-          error_messages.push(`Project ${major}.${minor} does not have code reviews.`);
-          return; // exit out of try block
-        }
-
         output.last_type = '';  // type of last pull request
         output.last_pull = '';  // number of last pull request
         output.last_date = '';  // date last pull request was approved
