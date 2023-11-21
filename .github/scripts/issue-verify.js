@@ -200,6 +200,12 @@ module.exports = async ({github, context, core}) => {
           return; // exit out of try block
         }
 
+        // project v4.0 and v5.0 have no code reviews
+        if ((major == 4 || major == 5) && minor == 0) {
+          error_messages.push(`Project ${major}.${minor} does not have code reviews.`);
+          return; // exit out of try block
+        }
+
         output.last_type = '';  // type of last pull request
         output.last_pull = '';  // number of last pull request
         output.last_date = '';  // date last pull request was approved
@@ -276,6 +282,11 @@ module.exports = async ({github, context, core}) => {
         if (minor > 2) {
           error_messages.push(`You do not need to request a project review grade for a v${major}.${minor} release.`);
           return;
+        }
+
+        if ((major == 4 || major == 5) && minor == 0) {
+          error_messages.push(`Project ${major}.${minor} does not have code reviews or code review grades.`);
+          return; // exit out of try block
         }
 
         // check if there is an issue for this request already
