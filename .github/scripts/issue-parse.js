@@ -46,7 +46,7 @@ module.exports = async ({github, context, core}) => {
     core.info(`Parsed: ${JSON.stringify(output)}`);
 
     // attempt to parse the release
-    const tag_regex = /^v([1-4])\.(\d+)\.(\d+)$/;
+    const tag_regex = /^v([1-5])\.(\d+)\.(\d+)$/;
     const tag_match = output.release.match(tag_regex);
 
     if (tag_match === null || tag_match.length !== 4) {
