@@ -103,7 +103,7 @@ module.exports = async ({github, context, core}) => {
     const code_reviews = [];
 
     for (const property of ['resubmit-code-review', 'resubmit-quick-review', 'review-passed']) {
-      if (property in current) {
+      if (current !== undefined && property in current) {
         code_reviews.push(...current[property]);
       }
     }
