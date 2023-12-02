@@ -46,7 +46,8 @@ module.exports = async ({github, context, core}) => {
       'project1': {},
       'project2': {},
       'project3': {},
-      'project4': {}
+      'project4': {},
+      'project5': {}
     };
 
     // loop through all found issues
@@ -63,6 +64,7 @@ module.exports = async ({github, context, core}) => {
           
           case 'project1': case 'project2': 
           case 'project3': case 'project4':
+          case 'project5':
             project = label.name;
             break;
           
@@ -103,7 +105,7 @@ module.exports = async ({github, context, core}) => {
     const code_reviews = [];
 
     for (const property of ['resubmit-code-review', 'resubmit-quick-review', 'review-passed']) {
-      if (current !== undefined && property in current) {
+      if (property in current) {
         code_reviews.push(...current[property]);
       }
     }
@@ -114,7 +116,7 @@ module.exports = async ({github, context, core}) => {
     output.found_reviews = code_reviews.length;
     core.info(`Found ${output.found_reviews} code reviews for project ${major}: ${code_reviews.map(x => x.number).join(', ')}` );
 
-    const review_grades = current !== undefined && 'grade-review' in current ? current['grade-review'].length : 0;
+    const review_grades = 'grade-review' in current ? current['grade-review'].length : 0;
     output.review_grades = review_grades;
 
     // process each request type
