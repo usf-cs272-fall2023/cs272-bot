@@ -161,7 +161,7 @@ module.exports = async ({github, context, core}) => {
       case 'request_review':
         // make sure there is already a test grade issue
         const has_tests = 'grade-tests' in current;
-        if (!has_tests) {
+        if (!has_tests && major != 5) {
           error_messages.push(`You must have a passing project ${major} tests grade issue before requesting your first code review appointment.`);
           return; // exit out of try block
         }
