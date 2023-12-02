@@ -175,7 +175,7 @@ module.exports = async ({github, context, core}) => {
         // check if there is a design grade issue for the previous project
         if (previous != undefined) {
           const has_design = 'grade-design' in previous;
-          if (!has_design) {
+          if (!has_design && major != 5) {
             error_messages.push(`You must have a passing project ${major - 1} design grade issue before requesting your first project ${major} code review appointment.`);
             return; // exit out of try block
           }
