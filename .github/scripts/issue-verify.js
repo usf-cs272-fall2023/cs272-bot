@@ -114,7 +114,7 @@ module.exports = async ({github, context, core}) => {
     output.found_reviews = code_reviews.length;
     core.info(`Found ${output.found_reviews} code reviews for project ${major}: ${code_reviews.map(x => x.number).join(', ')}` );
 
-    const review_grades = 'grade-review' in current ? current['grade-review'].length : 0;
+    const review_grades = current !== undefined && 'grade-review' in current ? current['grade-review'].length : 0;
     output.review_grades = review_grades;
 
     // process each request type
