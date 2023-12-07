@@ -9,7 +9,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Install cloc'
-        run: |
-          sudo apt install cloc
-          cloc --version
+      - name: 'Listing issues'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const config = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              per_page: 100
+            };
+
+            const project1 = await github.rest.issues.listForRepo({
+              ...config,
+              labels: 'project1'
+            });
+
+            core.info(JSON.stringify(project1));
+
+      # - name: 'Install cloc'
+      #   run: |
+      #     sudo apt install cloc
+      #     cloc --version
+
+      # compare project 1.1 test to 1.x design
+      # compare 2.1 test to 2.x design
+      # compare 3.1 test to 3.x design
+
+      # compare 1.x design to current version of code
