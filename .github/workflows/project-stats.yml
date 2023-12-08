@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 'Checkout scripts'
         id: checkout_workflows
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: usf-cs272-fall2023/cs272-bot
           sparse-checkout: .github/scripts
@@ -19,7 +19,7 @@ jobs:
 
       - name: 'Download issues'
         id: download_issues
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const script = require('./scripts/repo-issues.js');
