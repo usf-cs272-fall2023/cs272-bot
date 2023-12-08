@@ -1,19 +1,18 @@
-module.exports = async ({octokit, context, core}) => {
+module.exports = async ({github, context, core}) => {
   const error_messages = [];
   const output = {};
 
   try {
-    const request = {
+    const request = github.rest.issues.listForRepo.endpoint.merge({
       owner: context.repo.owner,
       repo: context.repo.repo,
       state: 'all'
-    };
+    });
 
-    const issues = octokit.paginate.iterator(octokit.rest.issues.listForRepo, request);
+    const issues = await github.paginate(request);
 
-    // https://octokit.github.io/rest.js/v20#pagination
-    for await (const response of issues) {
-      core.info(JSON.stringify(response));
+    for (const issue of issues) {
+      core.info(JSON.stringify(issue));
       break; // TODO just test if loop works
     }
 
