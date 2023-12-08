@@ -9,71 +9,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Listing issues'
+      - name: 'Checkout scripts'
+        id: checkout_workflows
+        uses: actions/checkout@v3
+        with:
+          repository: usf-cs272-fall2023/cs272-bot
+          sparse-checkout: .github/scripts
+          path: 'scripts'
+
+      - name: 'Download issues'
+        id: download_issues
         uses: actions/github-script@v6
         with:
           script: |
-            const config = {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'all',
-              per_page: 100
-            };
-
-            const [grade_tests, grade_design] = await Promise.all([
-              github.rest.issues.listForRepo({
-                ...config,
-                labels: 'grade-tests'
-              }),
-              github.rest.issues.listForRepo({
-                ...config,
-                labels: 'grade-design'
-              })
-            ]);
-
-            core.info(`Found ${grade_tests?.data?.length} project test issues.`);
-            core.info(`Found ${grade_design?.data?.length} project design issues.`);
-
-            const releases = {};
-
-            responses: for (const response of [grade_tests, grade_design]) {
-              issues: for (const issue of response.data) {
-                let project = undefined;
-                let type = undefined;
-                let release = undefined;
-
-                labels: for (const label of issue.labels) {
-                  switch (label.name) {
-                    case 'error':
-                      core.info(`Skipping issue #${issue.number} due to "error" label.`);
-                      continue issues;
-
-                    case 'project1': case 'project2': 
-                    case 'project3': case 'project4':
-                    case 'project5':
-                      project = label.name;
-                      break;
-                  
-                    case 'grade-tests': case 'grade-design':
-                      type = label.name;
-                      break;
-                    
-                    default:
-                      if (label.name.startsWith('v')) {
-                        release = label.name;
-                      }
-                      break;
-                  }
-                }
-
-                core.info(`Issue ${issue.number} project ${project} type ${type
-                } release ${release}`);
-                
-                if (project && type && release) {
-                  core.info('Stopped here. Add release to dictionary.')
-                }
-              }
-            }
+            const script = require('./scripts/repo-issues.js');
+            return await script({github, context, core});
 
       # - name: 'Install cloc'
       #   run: |
