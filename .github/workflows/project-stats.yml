@@ -20,12 +20,20 @@ jobs:
               per_page: 100
             };
 
-            const project1 = await github.rest.issues.listForRepo({
-              ...config,
-              labels: 'project1'
-            });
+            const [grade_tests, grade_design] = await Promise.all([
+              github.rest.issues.listForRepo({
+                ...config,
+                labels: 'grade-tests'
+              }),
+              github.rest.issues.listForRepo({
+                ...config,
+                labels: 'grade-design'
+              })
+            ]);
 
-            core.info(JSON.stringify(project1));
+            core.info(grade_tests?.data?.length);
+            core.info(grade_design?.data?.length);
+            
 
       # - name: 'Install cloc'
       #   run: |
