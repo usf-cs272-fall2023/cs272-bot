@@ -68,6 +68,10 @@ jobs:
 
                 core.info(`Issue ${issue.number} project ${project} type ${type
                 } release ${release}`);
+                
+                if (project && type && release) {
+                  core.info('Stopped here. Add release to dictionary.')
+                }
               }
             }
 
