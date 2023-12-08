@@ -31,9 +31,45 @@ jobs:
               })
             ]);
 
-            core.info(grade_tests?.data?.length);
-            core.info(grade_design?.data?.length);
-            
+            core.info(`Found ${grade_tests?.data?.length} project test issues.`);
+            core.info(`Found ${grade_design?.data?.length} project design issues.`);
+
+            const releases = {};
+
+            responses: for (const response of [grade_tests, grade_design]) {
+              issues: for (const issue of response.data) {
+                let project = undefined;
+                let type = undefined;
+                let release = undefined;
+
+                labels: for (const label of issue.labels) {
+                  switch (label.name) {
+                    case 'error':
+                      core.info(`Skipping issue #${issue.number} due to "error" label.`);
+                      continue issues;
+
+                    case 'project1': case 'project2': 
+                    case 'project3': case 'project4':
+                    case 'project5':
+                      project = label.name;
+                      break;
+                  
+                    case 'grade-tests': case 'grade-design':
+                      type = label.name;
+                      break;
+                    
+                    default:
+                      if (label.name.startsWith('v')) {
+                        release = label.name;
+                      }
+                      break;
+                  }
+                }
+
+                core.info(`Issue ${issue.number} project ${project} type ${type
+                } release ${release}`);
+              }
+            }
 
       # - name: 'Install cloc'
       #   run: |
