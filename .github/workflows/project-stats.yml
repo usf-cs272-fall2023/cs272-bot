@@ -15,18 +15,13 @@ jobs:
         with:
           repository: usf-cs272-fall2023/cs272-bot
           sparse-checkout: .github/scripts
-          path: 'scripts'
-
-      - name: 'Listing files'
-        run: |
-          ls -ACGR .
 
       - name: 'Download issues'
         id: download_issues
         uses: actions/github-script@v7
         with:
           script: |
-            const script = require('./scripts/repo-issues.js');
+            const script = require('./.github/scripts/repo-issues.js');
             return await script({github, context, core});
 
       # - name: 'Install cloc'
