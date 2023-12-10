@@ -59,7 +59,7 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
-      const issue_type = [issue_grades, issue_reviews].flat();
+      const issue_type = [issue_grades, issue_reviews].flat().shift();
       parsed[issue_projects.shift()][issue_type] = issue_releases.shift();
     }
 
