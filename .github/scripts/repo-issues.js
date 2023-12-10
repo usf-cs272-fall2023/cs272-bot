@@ -1,6 +1,7 @@
 module.exports = async ({github, context, core}) => {
   const error_messages = [];
   const output = {};
+  const parsed = {};
 
   // label configuration
   const error_label = 'error';
@@ -17,9 +18,9 @@ module.exports = async ({github, context, core}) => {
 
   // setup results
   project_labels.forEach(project => {
-    output[project] = {};
+    parsed[project] = {};
     valid_labels.forEach(label => {
-      output[project][label] = [];
+      parsed[project][label] = [];
     });
   });
 
@@ -59,9 +60,10 @@ module.exports = async ({github, context, core}) => {
       }
 
       const issue_type = issue_grades.shift() + issue_reviews.shift();
-      output[issue_projects.shift()][issue_type] = issue_releases.shift();
+      parsed[issue_projects.shift()][issue_type] = issue_releases.shift();
     }
 
+    output.parsed = JSON.stringify(parsed);
   }
   catch (error) {
     // add error and output stack trace
@@ -77,7 +79,7 @@ module.exports = async ({github, context, core}) => {
     // output and set results
     core.startGroup('Setting output...');
     for (const property in output) {
-      console.log(`${property}: ${output[property]}`);
+      core.info(`${property}: ${output[property]}`);
       core.setOutput(property, output[property]);
     }
     core.endGroup();
