@@ -15,7 +15,7 @@ module.exports = async ({github, context, core}) => {
   const request_labels = new Set([...grade_labels, ...review_labels]);
   const valid_labels = new Set([...request_labels, ...result_labels]);
 
-  // setup output
+  // setup results
   project_labels.forEach(project => {
     output[project] = {};
     valid_labels.forEach(label => {
@@ -40,82 +40,26 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
-      const issue_projects = issue_labels.filter(label => project_labels.has(label));
+      // TODO: Switch to an approach that iterates through array fewer times
       const issue_releases = issue_labels.filter(label => label.match(release_regex));
+      const issue_projects = issue_labels.filter(label => project_labels.has(label));
+      const issue_grades   = issue_labels.filter(label => grade_labels.has(label));
+      const issue_reviews  = issue_labels.filter(label => review_labels.has(label));
+      const issue_results  = issue_labels.filter(label => result_labels.has(label));
 
-      if (issue_projects.length != 1) {
-        core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_projects}`);
+      if (issue_projects.length != 1 || issue_releases.length != 1 ||
+          issue_grades.length + issue_reviews != 1) {
+        core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_labels}`);
         continue issues;
       }
 
-      if (issue_releases.length != 1) {
-        core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_releases}`);
+      if (issue_reviews.length == 1 && issue_results != 1) {
+        core.warning(`Skipping issue #${issue.number} due to missing review result label: ${issue_labels}`);
         continue issues;
       }
 
-      const issue_grades = issue_labels.filter(label => grade_labels.has(label));
-
-      // const issue_grades   = issue_labels.intersection(grade_labels);
-      // const issue_reviews  = issue_labels.intersection(review_labels);
-      // const issue_results  = issue_labels.intersection(result_labels);
-
-      core.info(issue_projects);
-      core.info(issue_releases);
-
-      // let issue_projects = [];
-      // let issue_grades   = [];
-      // let issue_reviews  = [];
-      // let issue_results  = [];
-      // let issue_releases = [];
-
-      // // loop through issue labels
-      // labels: for (const label of issue.labels) {
-      //   if (!label.hasOwnProperty('name')) {
-      //     core.info(`Skipping issue #${issue.number} due to missing label name.`);
-      //     continue issues;
-      //   }
-      //   else if (label.name == error_label) {
-      //     core.info(`Skipping issue #${issue.number} due to "${error_label}" label.`);
-      //     continue issues;
-      //   }
-      //   else if (project_labels.has(label.name)) {
-      //     issue_projects.push(label.name);
-      //   }
-      //   else if (grade_labels.has(label.name)) {
-      //     issue_grades.push(label.name);
-      //   }
-      //   else if (review_labels.has(label.name)) {
-      //     issue_reviews.push(label.name);
-      //   }
-      //   else if (result_labels.has(label.name)) {
-      //     issue_results.push(label.name);
-      //   }
-      //   else if (label.name.match(release_regex)) {
-      //     issue_releases.push(label.name);
-      //   }
-      //   else {
-      //     core.warning(`Issue #${issue.number} has an unexpected "${label.name}" label.`);
-      //   }
-      // }
-
-      // // check for unexpected label combinations
-      // if (issue_projects.length != 1) {
-      //   core.warning(`Issue #${issue.number} has ${issue_projects.length} project labels: ${issue_projects}`);
-      // }
-      
-      // if (issue_releases.length != 1) {
-      //   core.warning(`Issue #${issue.number} has ${issue_releases.length} release labels: ${issue_releases}`);
-      // }
-
-      // if (issue_releases.length != 1) {
-      //   core.warning(`Issue #${issue.number} has ${issue_releases.length} release labels: ${issue_releases}`);
-      // }
-
-
-      // core.info(JSON.stringify(issue_projects));
-      // core.info(JSON.stringify(issue_labels));
-      // core.info(JSON.stringify(issue_releases));
-      // break; // TODO just test if loop works
+      const issue_type = issue_grades.shift() + issue_reviews.shift();
+      output[issue_projects.shift()][issue_type] = issue_releases.shift();
     }
 
   }
