@@ -1,7 +1,7 @@
 module.exports = async ({github, context, core}) => {
   const error_messages = [];
   const output = {};
-  const parsed = {};
+  const releases = {};
 
   // label configuration
   const error_label = 'error';
@@ -18,13 +18,14 @@ module.exports = async ({github, context, core}) => {
 
   // setup results
   project_labels.forEach(project => {
-    parsed[project] = {};
+    releases[project] = {};
     valid_labels.forEach(label => {
-      parsed[project][label] = [];
+      releases[project][label] = [];
     });
   });
 
   try {
+    // get all repository issues
     const request = github.rest.issues.listForRepo.endpoint.merge({
       owner: context.repo.owner,
       repo: context.repo.repo,
@@ -33,6 +34,7 @@ module.exports = async ({github, context, core}) => {
 
     const response = await github.paginate(request);
 
+    // process each issue
     issues: for (const issue of response) {
       const issue_labels = issue.labels.map(label => label.name);
 
@@ -48,6 +50,7 @@ module.exports = async ({github, context, core}) => {
       const issue_reviews  = issue_labels.filter(label => review_labels.has(label));
       const issue_results  = issue_labels.filter(label => result_labels.has(label));
 
+      // check for unexpected label combinations
       if (issue_projects.length != 1 || issue_releases.length != 1 ||
           issue_grades.length + issue_reviews != 1) {
         core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_labels}`);
@@ -59,13 +62,13 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
+      // store release information
       core.info(`Processing issue #${issue.number} with labels: ${issue_labels}`);
-
       const issue_type = [issue_grades, issue_reviews].flat().shift();
-      parsed[issue_projects.shift()][issue_type].push(issue_releases.shift());
+      releases[issue_projects.shift()][issue_type].push(issue_releases.shift());
     }
 
-    output.parsed = JSON.stringify(parsed);
+    output.releases = JSON.stringify(releases);
   }
   catch (error) {
     // add error and output stack trace
