@@ -33,16 +33,15 @@ module.exports = async ({github, context, core}) => {
     const response = await github.paginate(request);
 
     issues: for (const issue of response) {
-      const label_names  = issue.labels.map(label => label.name);
-      const issue_labels = new Set(label_names);
+      const issue_labels = issue.labels.map(label => label.name);
 
-      if (issue_labels.has(error_label)) {
+      if (issue_labels.includes(error_label)) {
         core.info(`Skipping issue #${issue.number} due to "${error_label}" label.`);
         continue issues;
       }
 
-      const issue_projects = Array.from(issue_labels.intersection(project_labels));
-      const issue_releases = label_names.filter(label => label.match(release_regex));
+      const issue_projects = issue_labels.filter(label => project_labels.has(label));
+      const issue_releases = issue_labels.filter(label => label.match(release_regex));
 
       if (issue_projects.length != 1) {
         core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_projects}`);
@@ -54,9 +53,9 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
-      const issue_grades   = issue_labels.intersection(grade_labels);
-      const issue_reviews  = issue_labels.intersection(review_labels);
-      const issue_results  = issue_labels.intersection(result_labels);
+      // const issue_grades   = issue_labels.intersection(grade_labels);
+      // const issue_reviews  = issue_labels.intersection(review_labels);
+      // const issue_results  = issue_labels.intersection(result_labels);
 
       core.log(issue_projects);
       core.log(issue_releases);
