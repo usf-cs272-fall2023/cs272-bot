@@ -59,8 +59,10 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
+      core.info(`Processing issue #${issue.number} with labels: ${issue_labels}`);
+
       const issue_type = [issue_grades, issue_reviews].flat().shift();
-      parsed[issue_projects.shift()][issue_type] = issue_releases.shift();
+      parsed[issue_projects.shift()][issue_type].push(issue_releases.shift());
     }
 
     output.parsed = JSON.stringify(parsed);
