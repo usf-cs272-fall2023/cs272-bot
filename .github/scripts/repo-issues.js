@@ -69,6 +69,7 @@ module.exports = async ({github, context, core}) => {
     }
 
     output.releases = JSON.stringify(releases);
+    return releases;
   }
   catch (error) {
     // add error and output stack trace
