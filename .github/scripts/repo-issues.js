@@ -53,12 +53,14 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
+      const issue_grades = issue_labels.filter(label => grade_labels.has(label));
+
       // const issue_grades   = issue_labels.intersection(grade_labels);
       // const issue_reviews  = issue_labels.intersection(review_labels);
       // const issue_results  = issue_labels.intersection(result_labels);
 
-      core.log(issue_projects);
-      core.log(issue_releases);
+      core.info(issue_projects);
+      core.info(issue_releases);
 
       // let issue_projects = [];
       // let issue_grades   = [];
