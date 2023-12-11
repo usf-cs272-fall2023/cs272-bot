@@ -1,9 +1,13 @@
 module.exports = async ({github, context, core, exec}) => {
   const releases = JSON.parse(process.env.RELEASES);
-  const projects = ['project1', 'project2', 'project3'];
-
   const token = process.env.TOKEN;
   const release_link = `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/`;
+
+  const projects = {
+    project1: 'Project 1 Index',
+    project2: 'Project 2 Search',
+    project3: 'Project 3 Threads'
+  };
 
   let summary = core.summary;
   
@@ -20,10 +24,10 @@ module.exports = async ({github, context, core, exec}) => {
 
   async function compareRefs(prefix, older, newer) {
     core.info('');
-    core.info(`Comparing releases ${one} and ${two}`);
+    core.info(`Comparing releases ${older} and ${newer}`);
 
-    await checkoutRef(older, prefix + 'older');
-    await checkoutRef(newer, prefix + 'newer');
+    await checkoutRef(older, older);
+    await checkoutRef(newer, newer);
 
     const command = 'cloc';
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--count-and-diff', prefix + 'older', prefix + 'newer']
@@ -42,14 +46,42 @@ module.exports = async ({github, context, core, exec}) => {
       }
     };
 
+    core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
-
     core.info(out);
+    core.endGroup();
+
+    return out;
   }
 
-  const one = releases['project1']['grade-tests'][0];
-  const two = releases['project1']['grade-design'][0];
+  for (const project of projects) {
+    summary = summary.addEOL();
+    summary = summary.addRaw(`## ${projects[project]}`, true);
+    summary = summary.addEOL();
 
-  await compareRefs('project1', one, two);
+    const current = releases[project];
+    const reviews = current['request-code-review'].concat(current['request-quick-review']);
+    reviews.sort();
 
+    summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project.`, false);
+
+    let older = current['grade-tests'].find(x => x.startsWith('v1.1'));
+    let newer = undefined;
+
+    if (current['grade-design'].length > 0) {
+      newer = current['grade-design'][0];
+      summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the [${newer}](${release_link}${newer}) design release.`);
+    }
+    else {
+      newer = reviews[reviews.length - 1];
+      summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the last reviewed [${newer}](${release_link}${newer}) release.`);
+    }
+
+    summary = summary.addEOL();
+    summary = summary.addEOL();
+
+    const output = await compareRefs(project, older, newer);
+    summary.addRaw(output);
+    summary = summary.addEOL();
+  }
 };
