@@ -22,8 +22,6 @@ module.exports = async ({github, context, core, exec}) => {
   const one = releases['project1']['grade-tests'][0];
   const two = releases['project1']['grade-design'][0];
 
-  checkoutRef(one, 'one');
-  checkoutRef(two, 'two');
-
-  
+  await checkoutRef(one, 'one');
+  await checkoutRef(two, 'two');
 };
