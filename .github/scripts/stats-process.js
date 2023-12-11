@@ -9,7 +9,9 @@ module.exports = async ({github, context, core}) => {
     project5: 'Project 5 Server'
   };
 
-  const listReleases = version => `\`${version}\``;
+  function listReleases(data) {
+    return data.sort().map(release => `\`${release}\``).join(', ');
+  }
 
   let summary = core.summary;
   summary = summary.addRaw('# CS 272 Project Statistics', true);
@@ -25,7 +27,7 @@ module.exports = async ({github, context, core}) => {
       summary = summary.addRaw(`## ${projects[project]}`, true);
       summary = summary.addRaw(`| **Label** | **Descriptions** |`, true);
       summary = summary.addRaw(`|----------:|:-----------------|`, true);
-      summary = summary.addRaw(`| Project Tests: | ${current['grade-tests'].sort().map(listReleases).join(', ')} |`, true);
+      summary = summary.addRaw(`| Project Tests: | ${listReleases(current['grade-tests'])} |`, true);
 
       summary = summary.addRaw('', true);
     }
