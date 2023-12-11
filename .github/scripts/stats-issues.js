@@ -52,7 +52,7 @@ module.exports = async ({github, context, core}) => {
 
       // check for unexpected label combinations
       if (issue_projects.length != 1 || issue_releases.length != 1 ||
-          issue_grades.length + issue_reviews != 1) {
+          issue_grades.length + issue_reviews.length != 1) {
         core.warning(`Skipping issue #${issue.number} due to unexpected labels: ${issue_labels}`);
         continue issues;
       }
