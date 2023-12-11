@@ -24,12 +24,7 @@ jobs:
             const script = require('./.github/scripts/stats-issues.js');
             return await script({github, context, core});
 
-      - name: 'Install cloc'
-        run: |
-          sudo apt install cloc
-          cloc --version
-
-      - name: 'Calculate statistics'
+      - name: 'Calculate review statistics'
         id: calculate_statistics
         uses: actions/github-script@v7
         env:
@@ -38,6 +33,23 @@ jobs:
           script: |
             const script = require('./.github/scripts/stats-process.js');
             return await script({github, context, core});
+
+      - name: 'Install cloc'
+        run: |
+          sudo apt install cloc
+          cloc --version
+
+      - name: 'Compare releases'
+        id: compare_releases
+        uses: actions/github-script@v7
+        env:
+          RELEASES: '${{ steps.download_issues.outputs.result }}'
+          TOKEN: '${{ github.token }}'
+        with:
+          script: |
+            const script = require('./.github/scripts/stats-counts.js');
+            return await script({github, context, core, exec});
+    
 
       # compare project 1.1 test to 1.x design
       # compare 2.1 test to 2.x design
