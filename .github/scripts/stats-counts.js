@@ -35,27 +35,28 @@ module.exports = async ({github, context, core, exec}) => {
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
     // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
-    let out = [];
-    let err = [];
+    // let out = [];
+    // let err = [];
 
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        out.push(data.toString());
+        core.info(data.toString());
+        summary = summary.addRaw(data.toString(), true);
       },
       stderr: (data) => {
-        err.push(data.toString());
+        core.error(data.toString());
       }
     };
 
     core.startGroup(`Running cloc...`);
-    await exec.exec(command, args);
-    out.forEach(line => core.info("hello: " + line));
-    err.forEach(line => core.error(line));
+    await exec.exec(command, args, options);
+    // out.forEach(line => core.info("hello: " + line));
+    // err.forEach(line => core.error(line));
     core.endGroup();
 
-    out.forEach(line => summary = summary.addRaw(line, true));
-    summary = summary.addRaw('hello world ' + out.length, true);
+    // out.forEach(line => summary = summary.addRaw(line, true));
+    // summary = summary.addRaw('hello world ' + out.length, true);
     await summary.write();
   }
 
@@ -68,6 +69,7 @@ module.exports = async ({github, context, core, exec}) => {
     const reviews = current['request-code-review'].concat(current['request-quick-review']);
     reviews.sort();
 
+    // output headers for this project
     summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project. `, false);
 
     let older = current['grade-tests'].find(x => x.match(/^v([1-5])\.1\.(\d+)$/));
@@ -83,8 +85,9 @@ module.exports = async ({github, context, core, exec}) => {
     }
 
     summary = summary.addEOL();
-    
     await summary.write();
+
+    // output comparison for this project
     await compareRefs(summary, older, newer);
   }
 
