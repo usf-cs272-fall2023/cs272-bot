@@ -23,7 +23,7 @@ module.exports = async ({github, context, core}) => {
 
   projects.forEach(project => {
     const current = releases[project]['grade-tests'];
-    summary = summary.addRaw('  ${current.length}  |', false);
+    summary = summary.addRaw(`  ${current.length}  |`, false);
   });
 
 // `
