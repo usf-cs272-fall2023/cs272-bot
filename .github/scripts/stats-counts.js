@@ -78,6 +78,18 @@ module.exports = async ({github, context, core, exec}) => {
     await compareRefs(summary, older, newer);
   }
 
-  // make sure last summary buffer is written
+  // compare project 1 to current main branch
+  const older = releases['project1']['grade-tests'].find(x => x.match(/^v([1-5])\.1\.(\d+)$/));
+  const newer = 'main';
+
+  summary = summary.addEOL();
+  summary = summary.addRaw(`## Project 1 to Latest`, true);
+  summary = summary.addEOL();
+
+  summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the latest version of your code.`, true);
+  summary = summary.addEOL();
+  await summary.write();
+
+  await compareRefs(summary, older, newer);
   await summary.write();
 };
