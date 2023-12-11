@@ -25,7 +25,7 @@ module.exports = async ({github, context, core}) => {
       summary = summary.addRaw(`## ${projects[project]}`, true);
       summary = summary.addRaw(`| **Label** | **Descriptions** |`, true);
       summary = summary.addRaw(`|----------:|:-----------------|`, true);
-      summary = summary.addRaw(`| Project Tests: | ${current['grade-tests'].map(listReleases).join(', ')} |`, true);
+      summary = summary.addRaw(`| Project Tests: | ${current['grade-tests'].sort().map(listReleases).join(', ')} |`, true);
 
       summary = summary.addRaw('', true);
     }
