@@ -33,25 +33,25 @@ module.exports = async ({github, context, core, exec}) => {
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
     // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
-    let out = '';
-    let err = '';
+    // let out = [];
+    // let err = [];
 
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        out += data.toString();
+        core.info(data.toString());
+        summary = summary.addRaw(data.toString(), true);
       },
       stderr: (data) => {
-        err += data.toString();
+        core.error(data.toString());
       }
     };
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
-    core.info(out);
     core.endGroup();
 
-    await core.summary.addRaw(out).write();
+    await summary.write();
 
     return out;
   }
