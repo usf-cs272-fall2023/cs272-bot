@@ -39,10 +39,7 @@ module.exports = async ({github, context, core, exec}) => {
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        const line = data.toString();
-        // out.push(data.toString());
-        summary = summary.addRaw(line);
-        core.info(line);
+        out.push(data.toString());
       },
       stderr: (data) => {
         err.push(data.toString());
@@ -51,11 +48,13 @@ module.exports = async ({github, context, core, exec}) => {
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
-    // out.forEach(line => core.info(line));
-    // err.forEach(line => core.error(line));
+    out.forEach(line => core.info(line));
+    err.forEach(line => core.error(line));
     core.endGroup();
 
-    await summary.addRaw('hello').write();
+    out.forEach(line => summary = summary.addRaw(line, true));
+    summary = summary.addRaw('hello world', true);
+    await summary.write();
   }
 
   for (const project in projects) {
@@ -84,8 +83,7 @@ module.exports = async ({github, context, core, exec}) => {
     summary = summary.addEOL();
     summary = summary.addEOL();
 
-    const out = await compareRefs(older, newer);
-    core.info('out: ' + out);
+    await compareRefs(summary, older, newer);
   }
 
   // make sure last summary buffer is written
