@@ -25,12 +25,6 @@ module.exports = async ({github, context, core, exec}) => {
 
   // compares two tags or branches using cloc
   async function compareRefs(summary, older, newer) {
-    core.info('');
-    core.info(`Comparing releases ${older} and ${newer}`);
-
-    await checkoutRef(older);
-    await checkoutRef(newer);
-
     const command = 'cloc';
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
@@ -75,6 +69,11 @@ module.exports = async ({github, context, core, exec}) => {
     await summary.write();
 
     // output comparison for this project
+    core.info('');
+    core.info(`Comparing releases ${older} and ${newer}`);
+
+    await checkoutRef(older);
+    await checkoutRef(newer);
     await compareRefs(summary, older, newer);
   }
 
@@ -90,6 +89,10 @@ module.exports = async ({github, context, core, exec}) => {
   summary = summary.addEOL();
   await summary.write();
 
+  core.info('');
+  core.info(`Comparing releases ${older} and ${newer}`);
+
+  await checkoutRef(newer);
   await compareRefs(summary, older, newer);
   await summary.write();
 };
