@@ -8,7 +8,6 @@ module.exports = async ({github, context, core, exec}) => {
   let summary = core.summary;
   
   async function checkoutRef(ref, path) {
-    core.info('');
     core.startGroup(`Cloning ${ref}...`);
 
     const command = 'git';
@@ -19,9 +18,38 @@ module.exports = async ({github, context, core, exec}) => {
     core.endGroup();
   }
 
+  async function compareRefs(prefix, older, newer) {
+    core.info('');
+    core.info(`Comparing releases ${one} and ${two}`);
+
+    await checkoutRef(older, prefix + 'older');
+    await checkoutRef(newer, prefix + 'newer');
+
+    const command = 'cloc';
+    const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--count-and-diff', prefix + 'older', prefix + 'newer']
+
+    // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
+    let out = '';
+    let err = '';
+
+    const options = {};
+    options.listeners = {
+      stdout: (data) => {
+        out += data.toString();
+      },
+      stderr: (data) => {
+        err += data.toString();
+      }
+    };
+
+    await exec.exec(command, args);
+
+    core.info(out);
+  }
+
   const one = releases['project1']['grade-tests'][0];
   const two = releases['project1']['grade-design'][0];
 
-  await checkoutRef(one, 'one');
-  await checkoutRef(two, 'two');
+  await compareRefs('project1', one, two);
+
 };
