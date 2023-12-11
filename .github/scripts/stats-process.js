@@ -16,6 +16,7 @@ module.exports = async ({github, context, core}) => {
 
   let review_count = 0;
 
+  // create code review summary table
   summary = summary.addRaw('|         Project: |  :one:  |  :two:  |  :three:  |  :four:  |  :five:  |', true);
   summary = summary.addRaw('|-----------------:|:---:|:---:|:---:|:---:|:---:|', true);
 
@@ -49,43 +50,16 @@ module.exports = async ({github, context, core}) => {
   summary = summary.addRaw('', true);
   summary = summary.addRaw('', true);
 
-  summary = summary.addRaw(`You had a total of \`${review_count}\` code reviews this semester.`);
+  summary = summary.addRaw(`You had a total of \`${review_count}\` code reviews this semester.`, true);
+  await summary.write();
 
+  // create project 1 source-lines-of-code table
+  summary = summary.addRaw('## Project 1 SLOC');
 
-// `
-// |          Project |  1  |  2  |  3  |  4  |  5  |
-// |-----------------:|:---:|:---:|:---:|:---:|:---:|
-// |   Project Tests: |
-// | Project Reviews: |
-// |   Review Passed: |
-// `;
+  const v11 = releases['project1']['grade-tests'].find(version => version.startsWith('v1.1'));
+  const v1x = releases['project1']['grade-design'][0];
 
-  // for (const project in projects) {
-  //   if (releases.hasOwnProperty(project)) {
-  //     const current = releases[project];
-  //     const tests = current['grade-tests'];
-  //     const reviews = current['request-code-review'].concat(current['request-quick-review']);
-  //     const passed = current['review-passed'];
-
-  //     review_count += reviews.length;
-
-  //     summary = summary.addRaw(`## ${projects[project]}`, true);
-  //     summary = summary.addRaw('', true);
-
-  //     summary = summary.addRaw(`| **Label** | **#** | **Releases** |`, true);
-  //     summary = summary.addRaw(`|----------:|:-----:|:-----------------|`, true);
-  //     summary = summary.addRaw(`|   Project Tests: | ${tests.length}   | ${listReleases(tests)}   |`, true);
-  //     summary = summary.addRaw(`| Project Reviews: | ${reviews.length} | ${listReleases(reviews)} |`, true);
-  //     summary = summary.addRaw(`|   Review Passed: | ${passed.length}  | ${listReleases(passed)}  |`, true);
-
-  //     summary = summary.addRaw('', true);
-  //   }
-  // }
-
-  summary = summary.addRaw(`## All Progress`, true);
-  summary = summary.addRaw('', true);
-
-
+  summary = summary.addRaw(`Comparing test release [\`${v11}\`](${release_link}${v11}) to design release [\`${v1x}\`](${release_link}${v1x})...`, true);
 
   await summary.write();
 };
