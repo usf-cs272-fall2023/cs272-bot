@@ -30,9 +30,10 @@ module.exports = async ({github, context, core}) => {
   summary = summary.addRaw('|   Project Reviews: |', false);
 
   projects.forEach(project => {
-    const current = current['request-code-review'].concat(current['request-quick-review']);
-    review_count += current.length;
-    summary = summary.addRaw(`  ${current.length}  |`, false);
+    const current = releases[project];
+    const reviews = current['request-code-review'].concat(current['request-quick-review']);
+    review_count += reviews.length;
+    summary = summary.addRaw(`  ${reviews.length}  |`, false);
   });
 
   summary = summary.addRaw('', true);
