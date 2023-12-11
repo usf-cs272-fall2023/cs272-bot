@@ -81,7 +81,7 @@ module.exports = async ({github, context, core, exec}) => {
     summary = summary.addEOL();
 
     const output = await compareRefs(project, older, newer);
-    summary.addRaw(output);
+    summary = summary.addRaw(output);
     summary = summary.addEOL();
     
     await summary.write();
