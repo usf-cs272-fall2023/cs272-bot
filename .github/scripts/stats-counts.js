@@ -97,7 +97,8 @@ module.exports = async ({github, context, core, exec}) => {
   await checkoutRef(newer);
   await compareRefs(summary, older, newer);
 
+  const today = new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'});
   summary = summary.addSeparator();
-  summary = summary.addRaw(`Generated on ${new Date().toString()}.`, true);
+  summary = summary.addRaw(`Generated on ${today}.`, true);
   await summary.write();
 };
