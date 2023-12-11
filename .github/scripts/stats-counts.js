@@ -30,7 +30,7 @@ module.exports = async ({github, context, core, exec}) => {
     await checkoutRef(newer, newer);
 
     const command = 'cloc';
-    const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--count-and-diff', older, newer]
+    const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
     // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
     let out = '';
@@ -63,7 +63,7 @@ module.exports = async ({github, context, core, exec}) => {
     const reviews = current['request-code-review'].concat(current['request-quick-review']);
     reviews.sort();
 
-    summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project.`, false);
+    summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project. `, false);
 
     let older = current['grade-tests'].find(x => x.match(/^v([1-5])\.1\.(\d+)$/));
     let newer = undefined;
