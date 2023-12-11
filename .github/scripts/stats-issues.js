@@ -65,7 +65,14 @@ module.exports = async ({github, context, core}) => {
       // store release information
       core.info(`Processing issue #${issue.number} with labels: ${issue_labels}`);
       const issue_type = [issue_grades, issue_reviews].flat().shift();
-      releases[issue_projects.shift()][issue_type].push(issue_releases.shift());
+      
+      const issue_release = issue_releases.shift();
+      releases[issue_projects.shift()][issue_type].push(issue_release);
+
+      if (issue_results.length > 0) {
+        const issue_result = issue_results.shift();
+        releases[issue_projects.shift()][issue_result].push(issue_release);
+      }
     }
 
     output.releases = JSON.stringify(releases);
