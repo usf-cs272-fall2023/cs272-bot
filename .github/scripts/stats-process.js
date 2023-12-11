@@ -37,6 +37,17 @@ module.exports = async ({github, context, core}) => {
   });
 
   summary = summary.addRaw('', true);
+  summary = summary.addRaw('|   Review Passed: |', false);
+
+  projects.forEach(project => {
+    const current = releases[project]['review-passed'];
+    const emoji = current > 0 ? ':white_check_mark:' : '';
+    summary = summary.addRaw(`  ${emoji}  |`, false);
+  });
+
+  summary = summary.addRaw('', true);
+
+  summary = summary.addRaw(`You had a total of \`${review_count}\` code reviews this semester.`);
 
 
 // `
@@ -72,7 +83,6 @@ module.exports = async ({github, context, core}) => {
   summary = summary.addRaw(`## All Progress`, true);
   summary = summary.addRaw('', true);
 
-  summary = summary.addRaw(`You had a total of \`${review_count}\` code reviews this semester.`);
 
 
   await summary.write();
