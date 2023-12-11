@@ -57,7 +57,7 @@ module.exports = async ({github, context, core}) => {
         continue issues;
       }
 
-      if (issue_reviews.length == 1 && issue_results != 1) {
+      if (issue_reviews.length == 1 && issue_results.length != 1) {
         core.warning(`Skipping issue #${issue.number} due to missing review result label: ${issue_labels}`);
         continue issues;
       }
