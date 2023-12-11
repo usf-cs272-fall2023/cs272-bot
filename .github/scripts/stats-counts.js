@@ -33,27 +33,26 @@ module.exports = async ({github, context, core, exec}) => {
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
     // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
-    // let out = [];
-    // let err = [];
+    let out = [];
+    let err = [];
 
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        const output = data.toString();
-        core.info(output);
-        summary = summary.addRaw('hello: ' + output, true);
+        out.push(data.toString());
       },
       stderr: (data) => {
-        core.error(data.toString());
+        err.push(data.toString());
       }
     };
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
+    out.forEach(line => core.info(line));
+    err.forEach(line => core.error(line));
     core.endGroup();
 
-    summary = summary.addEOL();
-    await summary.write();
+    return out;
   }
 
   for (const project in projects) {
@@ -82,6 +81,7 @@ module.exports = async ({github, context, core, exec}) => {
     summary = summary.addEOL();
     summary = summary.addEOL();
 
-    await compareRefs(project, older, newer);
+    const out = await compareRefs(project, older, newer);
+    core.info('out: ' + out);
   }
 };
