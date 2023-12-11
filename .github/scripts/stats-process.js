@@ -1,14 +1,11 @@
 module.exports = async ({github, context, core}) => {
-  const {RELEASES} = process.env;
+  const releases = process.env.RELEASES;
+
   let summary = core.summary;
-
   summary = summary.addRaw('# CS 272 Project Statistics', true);
-
-  // let markdown = [];
-  // markdown.push('# CS 272 Project Statistics');
-  // markdown.push('');
-  // markdown.push(`:octocat: Hello @${ context.actor }! You can find your project statistics below.`);
-  // markdown.push('');
+  summary = summary.addRaw('', true);
+  summary = summary.addRaw(`:octocat: Hello @${ context.actor }! You can find your project statistics below.`, true);
+  summary = summary.addRaw('', true);
 
   // let projects = {
   //   project1: 'Project 1 Index',
