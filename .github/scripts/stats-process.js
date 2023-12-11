@@ -16,7 +16,7 @@ module.exports = async ({github, context, core}) => {
 
   let review_count = 0;
 
-  summary = summary.addRaw('|          Project |  1  |  2  |  3  |  4  |  5  |', true);
+  summary = summary.addRaw('|         Project: |  :one:  |  :two:  |  :three:  |  :four:  |  :five:  |', true);
   summary = summary.addRaw('|-----------------:|:---:|:---:|:---:|:---:|:---:|', true);
 
   summary = summary.addRaw('|   Project Tests: |', false);
@@ -25,6 +25,18 @@ module.exports = async ({github, context, core}) => {
     const current = releases[project]['grade-tests'];
     summary = summary.addRaw(`  ${current.length}  |`, false);
   });
+
+  summary = summary.addRaw('', true);
+  summary = summary.addRaw('|   Project Reviews: |', false);
+
+  projects.forEach(project => {
+    const current = current['request-code-review'].concat(current['request-quick-review']);
+    review_count += current.length;
+    summary = summary.addRaw(`  ${current.length}  |`, false);
+  });
+
+  summary = summary.addRaw('', true);
+
 
 // `
 // |          Project |  1  |  2  |  3  |  4  |  5  |
