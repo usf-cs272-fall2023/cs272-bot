@@ -52,8 +52,6 @@ module.exports = async ({github, context, core, exec}) => {
     core.endGroup();
 
     await summary.write();
-
-    return out;
   }
 
   for (const project in projects) {
