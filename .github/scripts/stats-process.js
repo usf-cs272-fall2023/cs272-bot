@@ -27,7 +27,7 @@ module.exports = async ({github, context, core}) => {
   });
 
   summary = summary.addRaw('', true);
-  summary = summary.addRaw('|   Project Reviews: |', false);
+  summary = summary.addRaw('| Project Reviews: |', false);
 
   projects.forEach(project => {
     const current = releases[project];
@@ -41,10 +41,12 @@ module.exports = async ({github, context, core}) => {
 
   projects.forEach(project => {
     const current = releases[project]['review-passed'];
-    const emoji = current > 0 ? ':white_check_mark:' : '';
+    const emoji = current.length > 0 ? ':white_check_mark:' : '';
+
     summary = summary.addRaw(`  ${emoji}  |`, false);
   });
 
+  summary = summary.addRaw('', true);
   summary = summary.addRaw('', true);
 
   summary = summary.addRaw(`You had a total of \`${review_count}\` code reviews this semester.`);
