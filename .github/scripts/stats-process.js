@@ -23,11 +23,16 @@ module.exports = async ({github, context, core}) => {
   for (const project in projects) {
     if (releases.hasOwnProperty(project)) {
       const current = releases[project];
+      const tests = current['grade-tests'];
+      const reviews = current['request-code-review'].concat(current['request-quick-review']);
+      const passed = current['review-passed'];
 
       summary = summary.addRaw(`## ${projects[project]}`, true);
       summary = summary.addRaw(`| **Label** | **Descriptions** |`, true);
       summary = summary.addRaw(`|----------:|:-----------------|`, true);
-      summary = summary.addRaw(`| Project Tests: | ${listReleases(current['grade-tests'])} |`, true);
+      summary = summary.addRaw(`|   Project Tests: | ${listReleases(tests)} |`, true);
+      summary = summary.addRaw(`| Project Reviews: | ${listReleases(reviews)} |`, true);
+      summary = summary.addRaw(`|   Review Passed: | ${listReleases(passed)} |`, true);
 
       summary = summary.addRaw('', true);
     }
