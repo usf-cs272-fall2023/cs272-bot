@@ -18,7 +18,7 @@ module.exports = async ({github, context, core, exec}) => {
     const args = ['clone', '--depth', '1', '--no-tags', '-c', 'advice.detachedHead=false', '--branch', ref, `https://github-actions:${token}@github.com/${context.repo.owner}/${context.repo.repo}`, ref];
     await exec.exec(command, args);
 
-    await exec.exec('ls', ['-ACGR', `${path}/src/main/java`]);
+    await exec.exec('ls', ['-ACGR', `${ref}/src/main/java`]);
     core.endGroup();
   }
 
