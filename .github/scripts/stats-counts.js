@@ -39,8 +39,9 @@ module.exports = async ({github, context, core, exec}) => {
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        core.info(data.toString());
-        summary = summary.addRaw(data.toString(), true);
+        const output = data.toString();
+        core.info(output);
+        summary = summary.addRaw(output, true);
       },
       stderr: (data) => {
         core.error(data.toString());
