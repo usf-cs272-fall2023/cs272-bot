@@ -30,7 +30,7 @@ module.exports = async ({github, context, core, exec}) => {
     await checkoutRef(newer, newer);
 
     const command = 'cloc';
-    const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--count-and-diff', prefix + 'older', prefix + 'newer']
+    const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--count-and-diff', older, newer]
 
     // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
     let out = '';
@@ -83,5 +83,7 @@ module.exports = async ({github, context, core, exec}) => {
     const output = await compareRefs(project, older, newer);
     summary.addRaw(output);
     summary = summary.addEOL();
+    
+    await summary.write();
   }
 };
