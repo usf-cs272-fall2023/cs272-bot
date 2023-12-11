@@ -8,6 +8,7 @@ module.exports = async ({github, context, core, exec}) => {
   let summary = core.summary;
   
   async function checkoutRef(ref, path) {
+    core.info('');
     core.startGroup(`Cloning ${ref}...`);
 
     const command = 'git';
@@ -18,6 +19,11 @@ module.exports = async ({github, context, core, exec}) => {
     core.endGroup();
   }
 
-  const release = releases['project1']['grade-tests'][0];
-  checkoutRef(release, 'one');
+  const one = releases['project1']['grade-tests'][0];
+  const two = releases['project1']['grade-design'][0];
+
+  checkoutRef(one, 'one');
+  checkoutRef(two, 'two');
+
+  
 };
