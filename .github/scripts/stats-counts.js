@@ -8,9 +8,14 @@ module.exports = async ({github, context, core, exec}) => {
   let summary = core.summary;
   
   async function checkoutRef(ref, path) {
+    core.startGroup(`Cloning ${ref}...`);
+
     const command = 'git';
-    const args = ['clone', '--depth', '1', '--no-tags', '--branch', ref, `https://github-actions:${token}@github.com/${context.repo.owner}/${context.repo.repo}`, path];
+    const args = ['clone', '--depth', '1', '--no-tags', '-c', 'advice.detachedHead=false', '--branch', ref, `https://github-actions:${token}@github.com/${context.repo.owner}/${context.repo.repo}`, path];
     await exec.exec(command, args);
+
+    await exec.exec('ls', ['-ACGR', `${path}/src/main/java`]);
+    core.endGroup();
   }
 
   const release = releases['project1']['grade-tests'][0];
