@@ -50,7 +50,7 @@ module.exports = async ({github, context, core, exec}) => {
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
-    out.forEach(line => core.info(line));
+    out.forEach(line => core.info("hello: " + line));
     err.forEach(line => core.error(line));
     core.endGroup();
 
@@ -83,8 +83,8 @@ module.exports = async ({github, context, core, exec}) => {
     }
 
     summary = summary.addEOL();
-    summary = summary.addEOL();
-
+    
+    await summary.write();
     await compareRefs(summary, older, newer);
   }
 
