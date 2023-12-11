@@ -10,6 +10,8 @@ module.exports = async ({github, context, core, exec}) => {
   };
 
   let summary = core.summary;
+
+  // TODO Checkout all tags asynchronously and await once
   
   // clones the tag or branch
   async function checkoutRef(ref) {
@@ -94,5 +96,8 @@ module.exports = async ({github, context, core, exec}) => {
 
   await checkoutRef(newer);
   await compareRefs(summary, older, newer);
+
+  summary = summary.addSeparator();
+  summary = summary.addRaw(`Generated on ${new Date().toString()}.`, true);
   await summary.write();
 };
