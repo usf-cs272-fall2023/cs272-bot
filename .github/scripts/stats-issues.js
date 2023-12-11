@@ -64,14 +64,15 @@ module.exports = async ({github, context, core}) => {
 
       // store release information
       core.info(`Processing issue #${issue.number} with labels: ${issue_labels}`);
+      const issue_project = issue_projects.shift();
       const issue_type = [issue_grades, issue_reviews].flat().shift();
-      
       const issue_release = issue_releases.shift();
-      releases[issue_projects.shift()][issue_type].push(issue_release);
+
+      releases[issue_project][issue_type].push(issue_release);
 
       if (issue_results.length > 0) {
         const issue_result = issue_results.shift();
-        releases[issue_projects.shift()][issue_result].push(issue_release);
+        releases[issue_project][issue_result].push(issue_release);
       }
     }
 
