@@ -34,10 +34,6 @@ module.exports = async ({github, context, core, exec}) => {
     const command = 'cloc';
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
 
-    // https://github.com/actions/toolkit/tree/main/packages/exec#outputoptions
-    // let out = [];
-    // let err = [];
-
     const options = {};
     options.listeners = {
       stdout: (data) => {
@@ -51,39 +47,30 @@ module.exports = async ({github, context, core, exec}) => {
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args, options);
-    // out.forEach(line => core.info("hello: " + line));
-    // err.forEach(line => core.error(line));
     core.endGroup();
 
-    // out.forEach(line => summary = summary.addRaw(line, true));
-    // summary = summary.addRaw('hello world ' + out.length, true);
     await summary.write();
   }
 
   for (const project in projects) {
+    const current = releases[project];
+
+    // skip cloc metrics if do not have a design grade
+    if (current['grade-design'].length != 1) {
+      continue;
+    }
+
+    const older = current['grade-tests'].find(x => x.match(/^v([1-5])\.1\.(\d+)$/));
+    const newer = current['grade-design'][0];
+    const reviews = current['request-code-review'].concat(current['request-quick-review']);
+
+    // output headers for this project
     summary = summary.addEOL();
     summary = summary.addRaw(`## ${projects[project]}`, true);
     summary = summary.addEOL();
 
-    const current = releases[project];
-    const reviews = current['request-code-review'].concat(current['request-quick-review']);
-    reviews.sort();
-
-    // output headers for this project
     summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project. `, false);
-
-    let older = current['grade-tests'].find(x => x.match(/^v([1-5])\.1\.(\d+)$/));
-    let newer = undefined;
-
-    if (current['grade-design'].length > 0) {
-      newer = current['grade-design'][0];
-      summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the [${newer}](${release_link}${newer}) design release.`);
-    }
-    else {
-      newer = reviews[reviews.length - 1];
-      summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the last reviewed [${newer}](${release_link}${newer}) release.`);
-    }
-
+    summary = summary.addRaw(`The following are the **source-lines-of-code** metrics for the [${older}](${release_link}${older}) test release compared to the [${newer}](${release_link}${newer}) design release.`, true);
     summary = summary.addEOL();
     await summary.write();
 
