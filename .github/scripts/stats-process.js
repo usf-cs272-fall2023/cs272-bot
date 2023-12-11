@@ -1,5 +1,5 @@
 module.exports = async ({github, context, core}) => {
-  const releases = process.env.RELEASES;
+  const releases = JSON.parse(process.env.RELEASES);
 
   let summary = core.summary;
   summary = summary.addRaw('# CS 272 Project Statistics', true);
