@@ -11,6 +11,7 @@ module.exports = async ({github, context, core, exec}) => {
 
   let summary = core.summary;
   
+  // clones the tag or branch
   async function checkoutRef(ref) {
     core.startGroup(`Cloning ${ref}...`);
 
@@ -22,6 +23,7 @@ module.exports = async ({github, context, core, exec}) => {
     core.endGroup();
   }
 
+  // compares two tags or branches using cloc
   async function compareRefs(summary, older, newer) {
     core.info('');
     core.info(`Comparing releases ${older} and ${newer}`);
@@ -53,7 +55,7 @@ module.exports = async ({github, context, core, exec}) => {
     core.endGroup();
 
     out.forEach(line => summary = summary.addRaw(line, true));
-    summary = summary.addRaw('hello world', true);
+    summary = summary.addRaw('hello world ' + out.length, true);
     await summary.write();
   }
 
