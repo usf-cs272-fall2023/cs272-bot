@@ -9,8 +9,10 @@ module.exports = async ({github, context, core}) => {
     project5: 'Project 5 Server'
   };
 
+  const release_link = `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/`;
+
   function listReleases(data) {
-    return data.sort().map(release => `\`${release}\``).join(', ');
+    return data.sort().map(release => `[\`${release}\`](${release_link}${release})`).join(', ');
   }
 
   let summary = core.summary;
@@ -18,7 +20,6 @@ module.exports = async ({github, context, core}) => {
   summary = summary.addRaw('', true);
   summary = summary.addRaw(`:octocat: Hello @${ context.actor }! You can find your project statistics below.`, true);
   summary = summary.addRaw('', true);
-
 
   for (const project in projects) {
     if (releases.hasOwnProperty(project)) {
@@ -28,11 +29,11 @@ module.exports = async ({github, context, core}) => {
       const passed = current['review-passed'];
 
       summary = summary.addRaw(`## ${projects[project]}`, true);
-      summary = summary.addRaw(`| **Label** | **Descriptions** |`, true);
-      summary = summary.addRaw(`|----------:|:-----------------|`, true);
-      summary = summary.addRaw(`|   Project Tests: | ${listReleases(tests)} |`, true);
-      summary = summary.addRaw(`| Project Reviews: | ${listReleases(reviews)} |`, true);
-      summary = summary.addRaw(`|   Review Passed: | ${listReleases(passed)} |`, true);
+      summary = summary.addRaw(`| **Label** | **#** | **Descriptions** |`, true);
+      summary = summary.addRaw(`|----------:|:-----:|:-----------------|`, true);
+      summary = summary.addRaw(`|   Project Tests: | ${tests.length}   | ${listReleases(tests)}   |`, true);
+      summary = summary.addRaw(`| Project Reviews: | ${reviews.length} | ${listReleases(reviews)} |`, true);
+      summary = summary.addRaw(`|   Review Passed: | ${passed.length}  | ${listReleases(passed)}  |`, true);
 
       summary = summary.addRaw('', true);
     }
