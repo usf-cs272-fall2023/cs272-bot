@@ -41,7 +41,7 @@ module.exports = async ({github, context, core, exec}) => {
       stdout: (data) => {
         const output = data.toString();
         core.info(output);
-        summary = summary.addRaw(output, true);
+        summary = summary.addRaw('hello: ' + output, true);
       },
       stderr: (data) => {
         core.error(data.toString());
