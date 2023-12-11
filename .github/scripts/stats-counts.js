@@ -65,7 +65,7 @@ module.exports = async ({github, context, core, exec}) => {
 
     summary = summary.addRaw(`You had \`${reviews.length}\` code reviews for this project.`, false);
 
-    let older = current['grade-tests'].find(x => x.startsWith('v1.1'));
+    let older = current['grade-tests'].find(x => x.matches(/^v([1-5])\.1\.(\d+)$/));
     let newer = undefined;
 
     if (current['grade-design'].length > 0) {
