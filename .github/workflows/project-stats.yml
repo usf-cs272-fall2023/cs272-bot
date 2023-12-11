@@ -2,10 +2,6 @@ name: 'Project Stats'
 
 on:
   workflow_call:
-    inputs:
-      project_repo:
-        required: true
-        type: string
 
 jobs:
   main:
@@ -23,27 +19,25 @@ jobs:
       - name: 'Download issues'
         id: download_issues
         uses: actions/github-script@v7
-        env:
-          PROJECT_REPO: '${{ inputs.project_repo }}'
         with:
           script: |
             const script = require('./.github/scripts/stats-issues.js');
             return await script({github, context, core});
 
-      # - name: 'Install cloc'
-      #   run: |
-      #     sudo apt install cloc
-      #     cloc --version
+      - name: 'Install cloc'
+        run: |
+          sudo apt install cloc
+          cloc --version
 
-      # - name: 'Calculate statistics'
-      #   id: calculate_statistics
-      #   uses: actions/github-script@v7
-      #   env:
-      #     RELEASES: '${{ steps.download_issues.outputs.result }}'
-      #   with:
-      #     script: |
-      #       const script = require('./.github/scripts/stats-process.js');
-      #       return await script({github, context, core});
+      - name: 'Calculate statistics'
+        id: calculate_statistics
+        uses: actions/github-script@v7
+        env:
+          RELEASES: '${{ steps.download_issues.outputs.result }}'
+        with:
+          script: |
+            const script = require('./.github/scripts/stats-process.js');
+            return await script({github, context, core});
 
       # compare project 1.1 test to 1.x design
       # compare 2.1 test to 2.x design

@@ -1,5 +1,5 @@
 module.exports = async ({github, context, core}) => {
-  const {RELEASES, COMMENT_ID} = process.env;
+  const {RELEASES} = process.env;
   let markdown = [];
   markdown.push('# CS 272 Project Statistics');
   markdown.push('');

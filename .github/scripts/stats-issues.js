@@ -1,6 +1,4 @@
 module.exports = async ({github, context, core}) => {
-  const {PROJECT_REPO} = process.env;
-
   const error_messages = [];
   const output = {};
   const releases = {};
@@ -30,7 +28,7 @@ module.exports = async ({github, context, core}) => {
     // get all repository issues
     const request = github.rest.issues.listForRepo.endpoint.merge({
       owner: context.repo.owner,
-      repo: PROJECT_REPO,
+      repo: context.repo.repo,
       state: 'all'
     });
 
