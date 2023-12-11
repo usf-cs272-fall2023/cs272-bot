@@ -11,23 +11,23 @@ module.exports = async ({github, context, core, exec}) => {
 
   let summary = core.summary;
   
-  async function checkoutRef(ref, path) {
+  async function checkoutRef(ref) {
     core.startGroup(`Cloning ${ref}...`);
 
     const command = 'git';
-    const args = ['clone', '--depth', '1', '--no-tags', '-c', 'advice.detachedHead=false', '--branch', ref, `https://github-actions:${token}@github.com/${context.repo.owner}/${context.repo.repo}`, path];
+    const args = ['clone', '--depth', '1', '--no-tags', '-c', 'advice.detachedHead=false', '--branch', ref, `https://github-actions:${token}@github.com/${context.repo.owner}/${context.repo.repo}`, ref];
     await exec.exec(command, args);
 
     await exec.exec('ls', ['-ACGR', `${path}/src/main/java`]);
     core.endGroup();
   }
 
-  async function compareRefs(prefix, older, newer) {
+  async function compareRefs(summary, older, newer) {
     core.info('');
     core.info(`Comparing releases ${older} and ${newer}`);
 
-    await checkoutRef(older, older);
-    await checkoutRef(newer, newer);
+    await checkoutRef(older);
+    await checkoutRef(newer);
 
     const command = 'cloc';
     const args = ['--include-ext=java', '--ignore-whitespace', '--ignore-case', '--quiet', '--md', '--hide-rate', '--count-and-diff', older, newer]
@@ -39,7 +39,10 @@ module.exports = async ({github, context, core, exec}) => {
     const options = {};
     options.listeners = {
       stdout: (data) => {
-        out.push(data.toString());
+        const line = data.toString();
+        // out.push(data.toString());
+        summary = summary.addRaw(line);
+        core.info(line);
       },
       stderr: (data) => {
         err.push(data.toString());
@@ -48,11 +51,11 @@ module.exports = async ({github, context, core, exec}) => {
 
     core.startGroup(`Running cloc...`);
     await exec.exec(command, args);
-    out.forEach(line => core.info(line));
-    err.forEach(line => core.error(line));
+    // out.forEach(line => core.info(line));
+    // err.forEach(line => core.error(line));
     core.endGroup();
 
-    return out;
+    await summary.addRaw('hello').write();
   }
 
   for (const project in projects) {
@@ -81,7 +84,10 @@ module.exports = async ({github, context, core, exec}) => {
     summary = summary.addEOL();
     summary = summary.addEOL();
 
-    const out = await compareRefs(project, older, newer);
+    const out = await compareRefs(older, newer);
     core.info('out: ' + out);
   }
+
+  // make sure last summary buffer is written
+  await summary.write();
 };
