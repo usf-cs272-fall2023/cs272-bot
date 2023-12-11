@@ -54,7 +54,7 @@ module.exports = async ({github, context, core, exec}) => {
     return out;
   }
 
-  for (const project of projects) {
+  for (const project in projects) {
     summary = summary.addEOL();
     summary = summary.addRaw(`## ${projects[project]}`, true);
     summary = summary.addEOL();
