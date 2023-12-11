@@ -8,7 +8,7 @@ module.exports = async ({github, context, core}) => {
 
   summary = summary.addRaw('# CS 272 Project Statistics', true);
   summary = summary.addRaw('', true);
-  summary = summary.addRaw(`:octocat: Hello @${ context.actor }! You can find your project statistics below.`, true);
+  summary = summary.addRaw(`:octocat: You can find your project statistics below.`, true);
   summary = summary.addRaw('', true);
 
   // create code review summary table
