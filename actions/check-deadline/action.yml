@@ -93,7 +93,7 @@ runs:
       run: npm install fs
 
     - shell: bash
-      run: npm install @actions/artifact
+      run: npm install @actions/artifact@1.1.2
 
     - id: check_commits
       uses: actions/github-script@v6
